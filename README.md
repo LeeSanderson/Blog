@@ -1,2 +1,2 @@
 # Blog
-Markdown content for personal blog
+Markdown content for personal blog ;)
