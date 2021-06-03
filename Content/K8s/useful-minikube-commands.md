@@ -1,3 +1,9 @@
+---
+title: Useful minikube commands
+abstract: A list of useful minikube commands
+date: 2019-06-26
+tags: minikube,k8s
+---
 # Useful minikube commands
 
 Minikube is a tool that makes it easy to run Kubernetes locally for development purposes. On Windows, minikube runs a single-node Kubernetes cluster inside a Virtual Machine running on Virtualbox or Hyper-V.

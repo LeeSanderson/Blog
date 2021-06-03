@@ -1,3 +1,9 @@
+---
+title: Setting up minikube on Windows 10
+abstract: Instructions to help you set up minikube on a Windows 10 Home edition
+date: 2019-06-26
+tags: minikube,k8s
+---
 # Setting up minikube on Windows 10
 
 These instructions will help you set up minikube on a Windows 10 Home edition.

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BlogToHtml": {
+      "commandName": "Project",
+      "commandLineArgs": " -c D:\\Projects\\Github\\LeeSanderson\\Blog\\Content -o D:\\Projects\\Github\\LeeSanderson\\Blog\\Output -x True"
+    }
+  }
+}

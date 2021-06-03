@@ -1,0 +1,21 @@
+.logo { color: #A32B36; font-size: 2em; }
+.article-header {
+    background-color: #A32B36;
+    color: #fff;
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-top: -15px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+blockquote {
+    padding: 0 1em;
+    color: #4f5864;
+    border-left: .25em solid #4f5864
+}
+
+h1, h2 {
+    padding-bottom: .3em;
+    border-bottom: 1px solid #373e47
+}

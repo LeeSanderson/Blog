@@ -1,3 +1,10 @@
+---
+title: Blogging with GitHub and Markdown
+abstract: An introduction to getting started using GitHub and Markdown for blogging
+date: 2021-05-28
+tags: Blogging,Markdown,GitHub,VSCode
+---
+
 # Blogging with GitHub and Markdown
 
 > An introduction to getting started using GitHub and Markdown for blogging - blogging about blogging... very meta.

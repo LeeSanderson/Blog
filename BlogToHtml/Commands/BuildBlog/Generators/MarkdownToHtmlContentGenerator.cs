@@ -1,0 +1,82 @@
+﻿namespace BlogToHtml.Commands.BuildBlog.Generators
+{
+    using System.IO;
+    using System.Threading.Tasks;
+    using BlogToHtml.Commands.BuildBlog.Models;
+    using Markdig;
+    using Markdig.Parsers;
+    using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
+    using Markdig.Renderers.Html;
+    using YamlDotNet.Serialization;
+    using YamlDotNet.Serialization.Converters;
+    using YamlDotNet.Serialization.NamingConventions;
+    using System;
+
+    internal class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
+    {
+        private readonly ArticleTemplate articleTemplate;
+        private readonly MarkdownPipeline pipeline;
+        private readonly FrontMatterProcessor frontMatterProcessor;
+
+        public MarkdownToHtmlContentGenerator(GeneratorContext generatorContext): base(generatorContext)
+        {
+            this.articleTemplate = new ArticleTemplate(generatorContext.RazorEngineService);
+            this.pipeline = new MarkdownPipelineBuilder()
+                .UseBootstrap()
+                .UseYamlFrontMatter()
+                .UseAdvancedExtensions().Build();
+
+            this.frontMatterProcessor = new FrontMatterProcessor();
+        }
+
+        public override async Task GenerateContentAsync(FileInfo sourceFileInfo)
+        {
+            var markdownSource = string.Empty;
+            using (var reader = sourceFileInfo.OpenText())
+            {
+                markdownSource = await reader.ReadToEndAsync();
+            }
+
+            var outputFileInfo = GetOutputFileInfo(sourceFileInfo, "html");
+            EnsureOutputPathExists(outputFileInfo);
+
+            var articleModel = ConvertMarkdownToModel(markdownSource);
+            var templateContext = new TemplateContext(this.generatorContext.OutputDirectory, outputFileInfo);
+            var htmlSource = articleTemplate.Generate(articleModel, templateContext);
+            using (var writer = outputFileInfo.CreateText())
+            {
+                await writer.WriteAsync(htmlSource);
+            }
+        }
+
+        public ArticleModel ConvertMarkdownToModel(string markdownSource)
+        {
+            var document = MarkdownParser.Parse(markdownSource, this.pipeline);
+            RewriteInternalLinks(document);
+            return CreateArticleModel(document);
+        }
+
+        private ArticleModel CreateArticleModel(MarkdownDocument document)
+        {
+            var model = this.frontMatterProcessor.GetFrontMatter<ArticleModel>(document);
+            model.Content = document.ToHtml(this.pipeline);
+            return model;
+        }
+
+        private void RewriteInternalLinks(MarkdownDocument document)
+        {
+            foreach (var descendant in document.Descendants())
+            {
+                if (descendant is LinkInline link && link.Url != null && !link.Url.StartsWith("http"))
+                {
+                    link.Url = link.Url.Replace(".md", ".html");
+                }
+                else if (descendant is AutolinkInline || descendant is LinkInline)
+                {
+                    descendant.GetAttributes().AddPropertyIfNotExist("target", "_blank");
+                }
+            }
+        }
+    }
+}

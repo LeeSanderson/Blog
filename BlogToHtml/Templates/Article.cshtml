@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = Model.Title;
+    Layout = "_Layout";
+
+}
+
+<div class="article-header">
+    @Model.PublicationDate?.ToString("MMM dd, yyyy")
+
+    @foreach (var tag in Model.GetTags())
+    {
+        <span class="badge badge-info">@tag</span>
+    }
+</div>
+
+@Raw(Model.Content)
