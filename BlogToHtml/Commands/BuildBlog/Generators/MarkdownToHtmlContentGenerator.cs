@@ -1,4 +1,6 @@
-﻿namespace BlogToHtml.Commands.BuildBlog.Generators
+﻿using Markdig.Prism;
+
+namespace BlogToHtml.Commands.BuildBlog.Generators
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -25,14 +27,16 @@
             this.pipeline = new MarkdownPipelineBuilder()
                 .UseBootstrap()
                 .UseYamlFrontMatter()
-                .UseAdvancedExtensions().Build();
+                .UseAdvancedExtensions()
+                .UsePrism()
+                .Build();
 
             this.frontMatterProcessor = new FrontMatterProcessor();
         }
 
         public override async Task GenerateContentAsync(FileInfo sourceFileInfo)
         {
-            var markdownSource = string.Empty;
+            string markdownSource;
             using (var reader = sourceFileInfo.OpenText())
             {
                 markdownSource = await reader.ReadToEndAsync();
@@ -44,13 +48,13 @@
             var articleModel = ConvertMarkdownToModel(markdownSource);
             var templateContext = new TemplateContext(this.generatorContext.OutputDirectory, outputFileInfo);
             var htmlSource = articleTemplate.Generate(articleModel, templateContext);
-            using (var writer = outputFileInfo.CreateText())
+            await using (var writer = outputFileInfo.CreateText())
             {
                 await writer.WriteAsync(htmlSource);
             }
         }
 
-        public ArticleModel ConvertMarkdownToModel(string markdownSource)
+        private ArticleModel ConvertMarkdownToModel(string markdownSource)
         {
             var document = MarkdownParser.Parse(markdownSource, this.pipeline);
             RewriteInternalLinks(document);
