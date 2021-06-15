@@ -22,3 +22,17 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: CopyFiles@2
+  condition: succeeded()
+  displayName: 'Copy BlogBuilder to artifact directory'
+  inputs:
+    contents: 'BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/BlogToHtml'
+
+- task: PublishBuildArtifacts@1
+  condition: succeeded()
+  displayName: 'Pushlish BlogBuilder artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/BlogToHtml'
+    artifactName: 'BlogToHtml'
+    

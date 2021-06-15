@@ -1,19 +1,14 @@
-﻿using Markdig.Prism;
-
-namespace BlogToHtml.Commands.BuildBlog.Generators
+﻿namespace BlogToHtml.Commands.BuildBlog.Generators
 {
     using System.IO;
     using System.Threading.Tasks;
-    using BlogToHtml.Commands.BuildBlog.Models;
+    using Models;
     using Markdig;
     using Markdig.Parsers;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using Markdig.Renderers.Html;
-    using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.Converters;
-    using YamlDotNet.Serialization.NamingConventions;
-    using System;
+    using MarkdigExtensions.Prism;
 
     internal class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
     {
@@ -68,17 +63,19 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             return model;
         }
 
-        private void RewriteInternalLinks(MarkdownDocument document)
+        private static void RewriteInternalLinks(MarkdownObject document)
         {
             foreach (var descendant in document.Descendants())
             {
-                if (descendant is LinkInline link && link.Url != null && !link.Url.StartsWith("http"))
+                switch (descendant)
                 {
-                    link.Url = link.Url.Replace(".md", ".html");
-                }
-                else if (descendant is AutolinkInline || descendant is LinkInline)
-                {
-                    descendant.GetAttributes().AddPropertyIfNotExist("target", "_blank");
+                    case LinkInline link when link.Url != null && !link.Url.StartsWith("http"):
+                        link.Url = link.Url.Replace(".md", ".html");
+                        break;
+                    case AutolinkInline:
+                    case LinkInline:
+                        descendant.GetAttributes().AddPropertyIfNotExist("target", "_blank");
+                        break;
                 }
             }
         }

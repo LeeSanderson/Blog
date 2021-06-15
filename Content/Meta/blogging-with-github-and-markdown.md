@@ -21,6 +21,7 @@ There are plenty of jobs where the required knowledge base is fairly static, but
 For me, I use my blog as a way of documenting the things that I spend time learning. It reinforces the learning process and provide me with notes and links to any technology, tool, methodology, practice, or language that I have written about in the past. 
 
 ## Why use GitHub?
+GitHub has a number of advantages over traditional blogging platforms for those from a software development background:
 
 - Content is version controlled so I can view the history of changes to an article.
 - You can allow others to contribute to your blog or create a team blog and control content publishing via the [pull request process](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
@@ -32,7 +33,8 @@ For me, I use my blog as a way of documenting the things that I spend time learn
 Sure I could use HTML or Razor, but Markdown has a lower formatting overhead and, most importantly, provides [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) - the content of my blog is kept separate from any presentation and styling concerns allowing me to update the style independently of content changes.
 
 
-### Using VSCode to author Markdown content.
+
+### Using VSCode to author Markdown content
 
 As a developer, you are already probably already using [Visual Studio Code](https://code.visualstudio.com/). And it natively [supports markdown](https://code.visualstudio.com/docs/languages/markdown) so there is no reason not to use it to author content for your blog.
 
@@ -42,3 +44,6 @@ As a developer, you are already probably already using [Visual Studio Code](http
 ```bash
 > code --install-extension streetsidesoftware.code-spell-checker
 ```
+
+## Next Steps
+So, you have started your blog and you have written a number of articles. The next step is to [generate a static website from you Markdown blog articles](generating-a-static-website-using-markdown.md)
