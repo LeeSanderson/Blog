@@ -54,6 +54,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/components/prism-core.min.js" integrity="sha256-2N+3bVl+vOCJyZ9ZbH9Eb99XKT/53oT5V8eRbB8bFcA=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-33Qw0lN3qo7tLZL4c7vDLCapRUs+gNtQRaVIOHk4Ors=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js"></script>
     @RenderSection("Scripts", required: false)
+    <script>
+        $(function() {
+            mermaid.initialize({ startOnLoad: true });
+        });
+    </script>
 </body>
 </html>

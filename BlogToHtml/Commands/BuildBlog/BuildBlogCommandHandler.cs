@@ -21,8 +21,10 @@
             logger = Log.ForContext<BuildBlogCommandHandler>();
             this.options = options;
 
-            var config = new TemplateServiceConfiguration();
-            config.TemplateManager = new EmbeddedResourceTemplateManager(typeof(BuildBlogCommandHandler));
+            var config = new TemplateServiceConfiguration
+            {
+                TemplateManager = new EmbeddedResourceTemplateManager(typeof(BuildBlogCommandHandler))
+            };
             this.razorEngineService = RazorEngineService.Create(config);
         }
 
