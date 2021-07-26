@@ -26,8 +26,17 @@ steps:
   condition: succeeded()
   displayName: 'Copy BlogBuilder to artifact directory'
   inputs:
-    contents: 'BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/**'
+    sourceFolder: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/'
+    contents: '**'
     targetFolder: '$(Build.ArtifactStagingDirectory)/BlogToHtml'
+
+- task: CopyFiles@2
+  condition: succeeded()
+  displayName: 'Copy Content files to artifact directory'
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/Content/'
+    contents: '**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/Content'
 
 - task: PublishBuildArtifacts@1
   condition: succeeded()
@@ -36,3 +45,9 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/BlogToHtml'
     artifactName: 'BlogToHtml'
     
+- task: PublishBuildArtifacts@1
+  condition: succeeded()
+  displayName: 'Pushlish Content artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/Content'
+    artifactName: 'Content'
