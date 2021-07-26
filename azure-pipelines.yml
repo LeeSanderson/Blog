@@ -22,32 +22,25 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: CopyFiles@2
-  condition: succeeded()
-  displayName: 'Copy BlogBuilder to artifact directory'
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/'
-    contents: '**'
-    targetFolder: '$(Build.ArtifactStagingDirectory)/BlogToHtml'
+- task: PowerShell@2
+  condititon: succeeded()
+  displayName: 'Execute generator'
+  workingDirectory: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/'
+  targetType: 'inline'
+  script: 
+    & BlogToHtml.exe -c "$(Build.SourcesDirectory)\Content" -o "$(Build.SourcesDirectory)\Output" -x True
 
 - task: CopyFiles@2
   condition: succeeded()
-  displayName: 'Copy Content files to artifact directory'
+  displayName: 'Copy Generated files to artifact directory'
   inputs:
-    sourceFolder: '$(Build.SourcesDirectory)/Content/'
+    sourceFolder: '$(Build.SourcesDirectory)/Output/'
     contents: '**'
-    targetFolder: '$(Build.ArtifactStagingDirectory)/Content'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/Output'
 
 - task: PublishBuildArtifacts@1
   condition: succeeded()
-  displayName: 'Pushlish BlogBuilder artifacts'
+  displayName: 'Pushlish Generated output artifacts'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/BlogToHtml'
-    artifactName: 'BlogToHtml'
-    
-- task: PublishBuildArtifacts@1
-  condition: succeeded()
-  displayName: 'Pushlish Content artifacts'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/Content'
-    artifactName: 'Content'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/Output'
+    artifactName: 'Blog'
