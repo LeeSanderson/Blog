@@ -36,7 +36,7 @@ stages:
     steps:
     - pwsh: |
       cd $(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/
-      BlogToHtml.exe -c "$(Build.SourcesDirectory)\Content" -o "$(Build.SourcesDirectory)\Output" -x True
+      BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
 
 - stage: Publish
   jobs:
