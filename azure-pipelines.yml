@@ -13,7 +13,7 @@ variables:
 stages:
 - stage: Build
   jobs:
-    - job: Restore Nuget Packages
+    - job: RestorePackages
       steps:
       - task: NuGetToolInstaller@1
       
@@ -21,7 +21,7 @@ stages:
         inputs:
           restoreSolution: '$(solution)'
 
-    - job: Build solution
+    - job: BuildSolution
       steps:
       - task: VSBuild@1
         inputs:
@@ -31,16 +31,17 @@ stages:
 
 - stage: Generate
   jobs:
-  - job: Use powershell to execute blog generator
+  - job: GenerateBlog
     condition: succeeded()
     steps:
     - pwsh: |
-      cd $(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/
-      BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
+        cd $(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/
+        BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
+
 
 - stage: Publish
   jobs:
-  - job: Copy and publish
+  - job: CopyAndPublish
     condition: succeeded()
     steps:    
     - task: CopyFiles@2
