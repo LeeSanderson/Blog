@@ -22,6 +22,7 @@ stages:
           restoreSolution: '$(solution)'
 
     - job: BuildSolution
+      condition: succeeded()
       steps:
       - task: VSBuild@1
         inputs:
@@ -29,28 +30,24 @@ stages:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
 
-- stage: Generate
-  jobs:
-  - job: GenerateBlog
-    condition: succeeded()
-    steps:
-    - pwsh: |
-        cd $(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/
-        BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
+    - job: GenerateBlog
+      condition: succeeded()
+      steps:
+      - pwsh: |
+           cd $(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/
+           BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
 
 
-- stage: Publish
-  jobs:
-  - job: CopyAndPublish
-    condition: succeeded()
-    steps:    
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/Output/'
-        contents: '**'
-        targetFolder: '$(Build.ArtifactStagingDirectory)/Output'
+    - job: CopyAndPublish
+      condition: succeeded()
+      steps:    
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: '$(Build.SourcesDirectory)/Output/'
+          contents: '**'
+          targetFolder: '$(Build.ArtifactStagingDirectory)/Output'
     
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/Output'
-        artifactName: 'Blog'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)/Output'
+          artifactName: 'Blog'
