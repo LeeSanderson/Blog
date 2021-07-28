@@ -10,44 +10,37 @@ variables:
   buildConfiguration: 'Release'
 
 
-stages:
-- stage: Build
-  jobs:
-    - job: RestorePackages
-      steps:
-      - task: NuGetToolInstaller@1
+steps:
+- task: NuGetToolInstaller@1
       
-      - task: NuGetCommand@2
-        inputs:
-          restoreSolution: '$(solution)'
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
 
-    - job: BuildSolution
-      condition: succeeded()
-      steps:
-      - task: VSBuild@1
-        inputs:
-          solution: '$(solution)'
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
+- task: VSBuild@1
+  condition: succeeded()
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
-    - job: GenerateBlog
-      condition: succeeded()
-      steps:
-      - pwsh: |
-           cd $(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/
-           BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
+- task: PowerShell@2 
+  condition: succeeded()
+  inputs:
+    targetType: inline
+    workingDirectory: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/'
+    script: |
+      BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
 
-
-    - job: CopyAndPublish
-      condition: succeeded()
-      steps:    
-      - task: CopyFiles@2
-        inputs:
-          sourceFolder: '$(Build.SourcesDirectory)/Output/'
-          contents: '**'
-          targetFolder: '$(Build.ArtifactStagingDirectory)/Output'
+- task: CopyFiles@2
+  condition: succeeded()
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)/Output/'
+    contents: '**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/Output'
     
-      - task: PublishBuildArtifacts@1
-        inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)/Output'
-          artifactName: 'Blog'
+- task: PublishBuildArtifacts@1
+  condition: succeeded()
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)/Output'
+    artifactName: 'Blog'
