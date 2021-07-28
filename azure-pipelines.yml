@@ -30,7 +30,8 @@ steps:
     targetType: inline
     workingDirectory: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/'
     script: |
-      &BlogToHtml -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
+      write-host "current directory = $(get-location)"
+      & BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
 
 - task: CopyFiles@2
   condition: succeeded()
