@@ -45,7 +45,7 @@ steps:
     script: |
       write-host "current directory = $(get-location)"
       md -Force 'SiteSource'
-      git clone https://LeeSanderson:$(Variables.GitHubAccessToken)@github.com/LeeSanderson/Blog.git --branch=main . --quiet
+      git clone https://LeeSanderson:$(GitHubAccessToken)@github.com/LeeSanderson/Blog.git --branch=main . --quiet
       if ($lastexitcode -gt 0)
       {
         write-host "Clone failed - check GitHubAccessToken is valid. Error code $lastexitcode"
