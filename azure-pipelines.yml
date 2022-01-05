@@ -74,4 +74,13 @@ steps:
       if ($lastexitcode -gt 0)
       {
         write-host "Commit failed. Error code $lastexitcode"
+        [Environment]::Exit(1)
       }      
+
+      git push --quiet
+      if ($lastexitcode -gt 0)
+      {
+        write-host "Push failed. Error code $lastexitcode"
+        [Environment]::Exit(1)
+      }      
+
