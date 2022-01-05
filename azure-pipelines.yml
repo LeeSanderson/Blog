@@ -8,7 +8,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-
+  - group: SharedVariables
 
 steps:
 - task: NuGetToolInstaller@1
@@ -32,6 +32,23 @@ steps:
     script: |
       write-host "current directory = $(get-location)"
       & .\BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
+
+- task: PowerShell@2 
+  name: Clone existing GitHub repository
+  condition: succeeded()
+  inputs:
+    targetType: inline
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    script: |
+      write-host "current directory = $(get-location)"
+      md -Force 'SiteSource'
+      git clone https://LeeSanderson:$(Variables.GitHubAccessToken)@github.com/LeeSanderson/Blog.git --branch=main . --quiet
+      if ($lastexitcode -gt 0)
+      {
+        write-host "Clone failed - check GitHubAccessToken is valid. Error code $lastexitcode"
+      }
+      
+
 
 - task: CopyFiles@2
   condition: succeeded()
