@@ -36,7 +36,7 @@
                 RegisterContentGenerators(generatorContext);
                 if (options.Clean)
                 {
-                    await CleanOuputDirectoryAsync(generatorContext.OutputDirectory);
+                    await CleanOutputDirectoryAsync(generatorContext.OutputDirectory);
                 }
 
                 await GenerateArticlesAsync(generatorContext);
@@ -85,7 +85,7 @@
             });
         }
 
-        private async Task CleanOuputDirectoryAsync(DirectoryInfo outputDirectory)
+        private async Task CleanOutputDirectoryAsync(DirectoryInfo outputDirectory)
         {
             await outputDirectory.RecurseAsync(f => { f.Delete(); return Task.CompletedTask; }, d => { d.Delete(); return Task.CompletedTask; });
         }

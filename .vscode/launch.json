@@ -11,7 +11,14 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/BlogToHtml/bin/Debug/netcoreapp3.1/BlogToHtml.dll",
-            "args": [],
+            "args": [
+                "-c",
+                "${workspaceFolder}/Content",
+                "-o",
+                "${workspaceFolder}/Output",
+                "-x",
+                "True"
+            ],
             "cwd": "${workspaceFolder}/BlogToHtml",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
