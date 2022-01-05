@@ -27,7 +27,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: PowerShell@2 
+- task: PowerShell@2
+  displayName: Generate Blog content 
   condition: succeeded()
   inputs:
     targetType: inline
@@ -37,7 +38,7 @@ steps:
       & .\BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
 
 - task: PowerShell@2 
-  displayName: Clone existing GitHub repository
+  displayName: Clone existing GitHub pages repository
   condition: succeeded()
   inputs:
     targetType: inline
@@ -48,19 +49,29 @@ steps:
       if ($lastexitcode -gt 0)
       {
         write-host "Clone failed - check GitHubAccessToken is valid. Error code $lastexitcode"
-      }
-      
-
+      }      
 
 - task: CopyFiles@2
+  displayName: Copy generated output to correct site folder
   condition: succeeded()
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)/Output/'
     contents: '**'
-    targetFolder: '$(Build.ArtifactStagingDirectory)/Output'
+    targetFolder: '$(System.DefaultWorkingDirectory)/SiteSource/Blog'
     
-- task: PublishBuildArtifacts@1
+- task: PowerShell@2 
+  displayName: Update GitHub pages repository
   condition: succeeded()
   inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)/Output'
-    artifactName: 'Blog'
+    targetType: inline
+    workingDirectory: '$(System.DefaultWorkingDirectory)/SiteSource'
+    script: |
+      git config core.autocrlf false
+      git config user.email lee.sndrsn@gmail.com
+      git config user.name LeeSanderson
+      git add *
+      git commit --allow-empty -m "Blog Update $(Build.BuildId)"      
+      if ($lastexitcode -gt 0)
+      {
+        write-host "Commit failed. Error code $lastexitcode"
+      }      
