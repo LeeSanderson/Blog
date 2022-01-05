@@ -37,7 +37,7 @@ steps:
       & .\BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
 
 - task: PowerShell@2 
-  name: Clone existing GitHub repository
+  displayName: Clone existing GitHub repository
   condition: succeeded()
   inputs:
     targetType: inline
