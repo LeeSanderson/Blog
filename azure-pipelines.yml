@@ -57,6 +57,7 @@ steps:
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)/Output/'
     contents: '**'
+    OverWrite: True
     targetFolder: '$(System.DefaultWorkingDirectory)/SiteSource/Blog'
     
 - task: PowerShell@2 
