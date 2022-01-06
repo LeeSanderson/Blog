@@ -5,51 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
     <title>@ViewBag.Title - SixSidedDice.com - Blog</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/bootstrapdarkly.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism.css" integrity="sha256-h/qtq9bUnXbOOwP4EcbLtYM9Mk3iQQcHZAZ+Jz5y0WQ=" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/site.css">
     <script src="https://kit.fontawesome.com/d22effaf67.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="@(ViewBag.TemplateContext.ReleativeRootPath)site.css">
+    <script type="module" src="/js/header.js"></script>
+    <script type="module" src="/js/footer.js"></script>
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <span class="logo">
-                        <i class="fas fa-dice-one"></i>
-                        <i class="fas fa-dice-two"></i>
-                        <i class="fas fa-dice-three"></i>
-                        <i class="fas fa-dice-four"></i>
-                        <i class="fas fa-dice-five"></i>
-                        <i class="fas fa-dice-six"></i>
-                    </span>
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/">Home</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <six-sided-header/>
     <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container-fluid">
-            &copy; @DateTime.Now.Year - SixSidedDice.com - <a href="/Privacy.html">Privacy</a>
-        </div>
-    </footer>
+    <six-sided-footer/>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/components/prism-core.min.js" integrity="sha256-2N+3bVl+vOCJyZ9ZbH9Eb99XKT/53oT5V8eRbB8bFcA=" crossorigin="anonymous"></script>

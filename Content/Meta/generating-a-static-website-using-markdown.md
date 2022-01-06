@@ -82,3 +82,6 @@ All that we need to do now is save the template output as a HTML file.
 ## Putting it all together
 
 A full working solution that expands on these topics and shows how to put all these components together is available on my [GitHub Blog Project](https://github.com/LeeSanderson/Blog).
+
+## Next Steps
+So, you have started your blog, you have written a number of articles, and you are generating content. The next step is to [publish your website](deploying-to-github-pages.md)
