@@ -7,6 +7,8 @@ tags: Blogging,GitHub,Azure DevOps
 
 # Deploying to GitHub Pages
 
+> A guide to publishing static content
+
 [GitHub Pages](https://docs.github.com/en/pages) is a way to freely host a static website. It supports HTTPS (so your site is always secure) and uses a content delivery network to ensure your site is always available globally and is responsive. It has a [few restrictions](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#prohibited-uses) but is ideal for a developer to host a personal website. It requires a [GitHub Account](https://github.com/signup) but as developers we already have one of those, right?
 
 In my [Blogging with GitHub and Markdown](blogging-with-github-and-markdown.md) article I discussed using Markdown to author content for your blog and in my [Generating a Static Website Using Markdown](generating-a-static-website-using-markdown.md) article I showed how to use C#, [Markdig](https://github.com/xoofx/markdig), and [RazorEngine.NetCore](https://github.com/fouadmess/RazorEngine) to convert the Markdown content to HTML.

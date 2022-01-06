@@ -7,6 +7,8 @@ tags: TDD,Agile Technical Practices
 
 # Styles of Test Driven Development
 
+> A history of styles of TDD
+
 Generally, there are considered to be two styles of test driven development.
 
 1. Classicist TDD. Also known as the Chicago or Detroit school of TDD. In this school, unit tests perform state verification.

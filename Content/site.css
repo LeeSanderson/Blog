@@ -1,7 +1,5 @@
-.logo { color: #A32B36; font-size: 2em; }
 .article-header {
-    background-color: #A32B36;
-    color: #fff;
+    background-color: #222;
     margin-left: -15px;
     margin-right: -15px;
     margin-top: -15px;
@@ -17,5 +15,4 @@ blockquote {
 
 h1, h2 {
     padding-bottom: .3em;
-    border-bottom: 1px solid #373e47
 }

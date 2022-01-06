@@ -7,6 +7,8 @@ tags: Blogging,Markdown,CSharp,Markdig
 
 # Generating a Static Website Using Markdown
 
+> A guide to generating content for a static website
+
 In my [Blogging with GitHub and Markdown](blogging-with-github-and-markdown.md) article, I discussed using Markdown to author content for your blog. In this follow up article, I will use C#, [Markdig](https://github.com/xoofx/markdig), and [RazorEngine.NetCore](https://github.com/fouadmess/RazorEngine) to convert the Markdown content to HTML so that it can be published on to the Internet.
 
 The diagram below outlines how a raw Markdown source files are processed:
