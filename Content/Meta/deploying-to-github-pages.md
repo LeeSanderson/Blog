@@ -107,4 +107,4 @@ After any output has been copied to the local copy of the repository the followi
 
 [GitHub Pages](https://docs.github.com/en/pages) is a great way to publish a static site and [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) provides build infrastructure to simplify generating content for the site.
 
-No only that but both these tools are free to use.
+Not only that but both these tools are free to use.
