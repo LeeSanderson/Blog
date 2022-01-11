@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using BlogToHtml.Commands.BuildBlog.Models;
+using System.IO;
 using System.Linq;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
@@ -25,6 +26,13 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
         {
             Root = root;
             OutputFile = outputFile;
+        }
+
+        public string RelativeUrlTo(SummaryModel model)
+        {
+            var outputPath = OutputFile.Directory.FullName;
+            var relativePath = model.OutputFileInfo!.FullName.Replace(outputPath, "./");
+            return relativePath.Replace('\\', '/');
         }
     }
 }

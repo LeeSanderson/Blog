@@ -1,4 +1,6 @@
 ﻿using RazorEngine.Templating;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
@@ -26,6 +28,14 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             viewBag.AddValue("TemplateContext", templateContext);
             return razorEngineService.Run(templateKey, typeof(TModel), model, viewBag);
         }
-    }
 
+        public async Task GenerateAndSaveAsync(TModel model, TemplateContext templateContext, FileInfo outputFileInfo)
+        {
+            var htmlSource = Generate(model, templateContext);
+            await using (var writer = outputFileInfo.CreateText())
+            {
+                await writer.WriteAsync(htmlSource);
+            }
+        }
+    }
 }

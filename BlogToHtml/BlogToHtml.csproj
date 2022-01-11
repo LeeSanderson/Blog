@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\All.cshtml" />
     <None Remove="Templates\Article.cshtml" />
+    <None Remove="Templates\Index.cshtml" />
     <None Remove="Templates\_Layout.cshtml" />
+    <None Remove="Templates\_SummaryList.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

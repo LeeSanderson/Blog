@@ -4,7 +4,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    internal static class DirectoryInfoExtensions
+    public static class DirectoryInfoExtensions
     {
         public static DirectoryInfo ToDirectoryInfo(this string? path, bool createIfNotExists = false)
         {
@@ -32,7 +32,7 @@
 
             foreach (var childDirectoryInfo in directoryInfo.EnumerateDirectories())
             {
-                // Recurse child directory first (incase we are trying to delete the directory.
+                // Recurse child directory first (in case we are trying to delete the directory).
                 await childDirectoryInfo.RecurseAsync(onFile, onDirectory);
                 if (onDirectory != null)
                 {
@@ -40,5 +40,11 @@
                 }
             }
         }
+
+        public static async Task CleanAsync(this DirectoryInfo outputDirectory)
+        {
+            await outputDirectory.RecurseAsync(f => { f.Delete(); return Task.CompletedTask; }, d => { d.Delete(); return Task.CompletedTask; });
+        }
+
     }
 }

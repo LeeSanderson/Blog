@@ -1,0 +1,24 @@
+﻿<ul class="list-group list-group-flush">
+@foreach (var summary in Model)
+{
+    <li class="list-group-item">
+        <h4><a href="@ViewBag.TemplateContext.RelativeUrlTo(summary)">@summary.Title</a></h4>
+        <div>
+        @foreach (var tag in summary.GetTags())
+        {
+            <span class="badge badge-info">@tag</span>
+        }
+        </div>
+
+        @if (!string.IsNullOrEmpty(summary.Abstract))
+        {
+            <p>@summary.Abstract</p>
+        }
+
+        @if (summary.PublicationDate != null)
+        {
+            <p class="text-muted">@summary.PublicationDate?.ToString("MMM dd, yyyy")</p>
+        }
+    </li>
+}
+</ul>

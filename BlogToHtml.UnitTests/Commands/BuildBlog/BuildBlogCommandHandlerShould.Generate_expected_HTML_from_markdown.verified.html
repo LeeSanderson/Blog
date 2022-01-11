@@ -1,24 +1,31 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
-    <title>@ViewBag.Title - SixSidedDice.com - Blog</title>
+    <title>Untitled Blogpost - SixSidedDice.com - Blog</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/themes/prism-okaidia.css" integrity="sha256-nwDipdLn93O1CZGoRDor0i4CLmDQb+mdg/yaYMUCuLM=" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/site.css">
-    <link rel="stylesheet" href="@(ViewBag.TemplateContext.ReleativeRootPath)site.css">
+    <link rel="stylesheet" href="./site.css">
     <script src="https://kit.fontawesome.com/d22effaf67.js" crossorigin="anonymous"></script>
     <script type="module" src="/js/header.js"></script>
     <script type="module" src="/js/footer.js"></script>
-    @RenderSection("Styles", required: false)
+    
 </head>
 <body>
     <six-sided-header></six-sided-header>
     <div class="container-fluid">
         <main role="main" class="pb-3">
-            @RenderBody()
+            
+<div class="article-header">
+    
+
+</div>
+
+<h1 id="heading-1">Heading 1</h1>
+
         </main>
     </div>
 
@@ -29,7 +36,7 @@
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/components/prism-core.min.js" integrity="sha256-2N+3bVl+vOCJyZ9ZbH9Eb99XKT/53oT5V8eRbB8bFcA=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-33Qw0lN3qo7tLZL4c7vDLCapRUs+gNtQRaVIOHk4Ors=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js"></script>
-    @RenderSection("Scripts", required: false)
+    
     <script>
         $(function() {
             mermaid.initialize({ startOnLoad: true, theme: 'dark' });

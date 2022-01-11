@@ -4,7 +4,7 @@
 
     [Verb("build", isDefault: true, HelpText = "Build the HTML static site from a directory of Markdown files and images")]
     // ReSharper disable once ClassNeverInstantiated.Global - created implicitly in main program code.
-    internal class BuildBlogOptions
+    public class BuildBlogOptions
     {
         [Option('c', "content", Required = true, HelpText = "The directory containing the content")]
         public string? ContentDirectory { get; set; }

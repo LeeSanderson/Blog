@@ -9,12 +9,15 @@
     using Markdig.Syntax.Inlines;
     using Markdig.Renderers.Html;
     using MarkdigExtensions.Prism;
+    using System;
 
     internal class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
     {
         private readonly ArticleTemplate articleTemplate;
         private readonly MarkdownPipeline pipeline;
         private readonly FrontMatterProcessor frontMatterProcessor;
+
+        public event EventHandler<ArticleModel>? ArticleGenerated;
 
         public MarkdownToHtmlContentGenerator(GeneratorContext generatorContext): base(generatorContext)
         {
@@ -37,16 +40,15 @@
                 markdownSource = await reader.ReadToEndAsync();
             }
 
+            var articleModel = ConvertMarkdownToModel(markdownSource);
             var outputFileInfo = GetOutputFileInfo(sourceFileInfo, "html");
             EnsureOutputPathExists(outputFileInfo);
+            articleModel.OutputFileInfo = outputFileInfo;
 
-            var articleModel = ConvertMarkdownToModel(markdownSource);
             var templateContext = new TemplateContext(this.generatorContext.OutputDirectory, outputFileInfo);
-            var htmlSource = articleTemplate.Generate(articleModel, templateContext);
-            await using (var writer = outputFileInfo.CreateText())
-            {
-                await writer.WriteAsync(htmlSource);
-            }
+            await articleTemplate.GenerateAndSaveAsync(articleModel, templateContext, outputFileInfo);
+            
+            ArticleGenerated?.Invoke(this, articleModel);
         }
 
         private ArticleModel ConvertMarkdownToModel(string markdownSource)
