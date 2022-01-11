@@ -27,6 +27,13 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: VSTest@2
+  condition: succeeded()
+  inputs:
+     testAssemblyVer2: |
+       **\BlogToHtml.UnitTests.dll
+     codeCoverageEnabled: True     
+
 - task: PowerShell@2
   displayName: Generate Blog content 
   condition: succeeded()
