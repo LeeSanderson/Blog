@@ -30,9 +30,11 @@ steps:
 - task: VSTest@2
   condition: succeeded()
   inputs:
-     testAssemblyVer2: |
-       **\BlogToHtml.UnitTests.dll
-     codeCoverageEnabled: True     
+    testAssemblyVer2: |
+      **\bin\**\BlogToHtml.UnitTests.dll
+    codeCoverageEnabled: True     
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
 - task: PowerShell@2
   displayName: Generate Blog content 
