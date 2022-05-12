@@ -1,5 +1,5 @@
 ---
-title: DP-203 Study Guide: part 1 - non-relational data stores
+title: DP-203 Study Guide part 1 - non-relational data stores
 abstract: Part 1 of the Azure Data Engineering Associate study guid focusing on non-relational data stores
 date: 2022-04-20
 tags: DP203, Azure Storage, 
