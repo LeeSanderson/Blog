@@ -21,8 +21,8 @@
 
         public override async Task GenerateSummaryContentAsync()
         {            
-            await GenerateTemplateAsync(indexTemplate, "index.html", summaries.OrderByDescending(s => s.PublicationDate).Take(10).ToList());
-            await GenerateTemplateAsync(allTemplate, "all.html", summaries.OrderByDescending(s => s.PublicationDate).ToList());
+            await GenerateSummaryPageAsync(indexTemplate, "index.html", summaries.OrderByDescending(s => s.PublicationDate).Take(10).ToList());
+            await GenerateSummaryPageAsync(allTemplate, "all.html", summaries.OrderByDescending(s => s.PublicationDate).ToList());
         }
 
         public override void OnArticleGenerated(ArticleModel model)
@@ -30,7 +30,7 @@
             summaries.Add(model.Clone());
         }
 
-        public async Task GenerateTemplateAsync(TemplateBase<List<SummaryModel>> template, string outputFileName, List<SummaryModel> pageSummaries)
+        public async Task GenerateSummaryPageAsync(TemplateBase<List<SummaryModel>> template, string outputFileName, List<SummaryModel> pageSummaries)
         {
             var pageFileInfo = new FileInfo(Path.Combine(generatorContext.OutputDirectory.FullName, outputFileName));
             var templateContext = new TemplateContext(generatorContext.OutputDirectory, pageFileInfo);

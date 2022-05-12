@@ -63,8 +63,8 @@
             var output = new BlogOutput();
             foreach (var article in articles)
             {
-                var frontMatter = FrontMatterDelimiter + Environment.NewLine + yamlSerialiser.Serialize(article) + Environment.NewLine + FrontMatterDelimiter;
-                File.WriteAllText(article.OutputFileInfo.FullName, frontMatter + Environment.NewLine + Environment.NewLine + article.Content);
+                var frontMatter = $"{FrontMatterDelimiter}{Environment.NewLine}{yamlSerialiser.Serialize(article)}{Environment.NewLine}{FrontMatterDelimiter}";
+                File.WriteAllText(article.OutputFileInfo.FullName, $"{frontMatter}{Environment.NewLine}{Environment.NewLine}{article.Content}");
                 output.InputFiles.Add(article.OutputFileInfo);
             }
 
