@@ -5,9 +5,11 @@
         "Jeffries",
         "Kanban",
         "Kubernetes",
+        "Kusto",
         "Markdig",
         "Mockist",
         "Pryce",
+        "schemaless",
         "sixsideddice"
     ],
     "cSpell.language": "en-GB"
