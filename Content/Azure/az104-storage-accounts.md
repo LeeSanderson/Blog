@@ -471,3 +471,13 @@ Once Diagnostic settings are turned on and events are being sent to a log analyt
 
 The Backup Reports menu item in the Recovery Services Vault blade can also be used to view reports.
 
+### Deleting a Recovery Services Vault
+
+Deleting a Recovery Services Vault is tricky because the soft delete settings on the vault and storage accounts mean the vault may have backup data for 14 days even after the resources that were being backed up have been deleted.
+
+To delete a Recovery Services Vault prior to the expiry of the soft delete period you must:
+
+- Disable soft deleted (from the Properties menu of the RSV blade)
+- Delete, undelete and then re-delete any VM backups
+- Unregister any Storage Account file by going to the Backup Infrastructure menu of the RSV blade, selecting Storage Accounts and unregistering it.
+- Delete the RSV
