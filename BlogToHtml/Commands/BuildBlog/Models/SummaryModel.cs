@@ -15,10 +15,9 @@
         public string Abstract { get; set; } = string.Empty;
 
         [YamlMember(Alias = "tags")]
-        public string? Tags { get; set; }
+        public string[]? Tags { get; set; }
 
-        public IEnumerable<string> GetTags() =>
-            Tags?.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()) ?? Enumerable.Empty<string>();
+        public IEnumerable<string> GetTags() => Tags ?? Enumerable.Empty<string>();
 
         [YamlMember(Alias = "date")]
         public DateTime? PublicationDate { get; set; }
