@@ -41,7 +41,7 @@ steps:
   condition: succeeded()
   inputs:
     targetType: inline
-    workingDirectory: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/netcoreapp3.1/'
+    workingDirectory: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/net6/'
     script: |
       write-host "current directory = $(get-location)"
       & .\BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
