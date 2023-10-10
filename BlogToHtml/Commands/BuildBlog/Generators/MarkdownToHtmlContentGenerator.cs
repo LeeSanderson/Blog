@@ -1,4 +1,6 @@
-﻿namespace BlogToHtml.Commands.BuildBlog.Generators
+﻿using System.IO.Abstractions;
+
+namespace BlogToHtml.Commands.BuildBlog.Generators
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -32,7 +34,7 @@
             this.frontMatterProcessor = new FrontMatterProcessor();
         }
 
-        public override async Task GenerateContentAsync(FileInfo sourceFileInfo)
+        public override async Task GenerateContentAsync(IFileInfo sourceFileInfo)
         {
             string markdownSource;
             using (var reader = sourceFileInfo.OpenText())
@@ -45,7 +47,7 @@
             EnsureOutputPathExists(outputFileInfo);
             articleModel.OutputFileInfo = outputFileInfo;
 
-            var templateContext = new TemplateContext(this.generatorContext.OutputDirectory, outputFileInfo);
+            var templateContext = new TemplateContext(this.GeneratorContext.OutputDirectory, outputFileInfo);
             await articleTemplate.GenerateAndSaveAsync(articleModel, templateContext, outputFileInfo);
             
             ArticleGenerated?.Invoke(this, articleModel);
@@ -71,7 +73,7 @@
             {
                 switch (descendant)
                 {
-                    case LinkInline link when link.Url != null && !link.Url.StartsWith("http"):
+                    case LinkInline {Url: not null} link when !link.Url.StartsWith("http"):
                         link.Url = link.Url.Replace(".md", ".html");
                         break;
                     case AutolinkInline:

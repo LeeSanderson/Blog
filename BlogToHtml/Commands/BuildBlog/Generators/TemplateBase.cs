@@ -1,5 +1,6 @@
 ﻿using RazorEngine.Templating;
 using System.IO;
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
@@ -29,13 +30,11 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             return razorEngineService.Run(templateKey, typeof(TModel), model, viewBag);
         }
 
-        public async Task GenerateAndSaveAsync(TModel model, TemplateContext templateContext, FileInfo outputFileInfo)
+        public async Task GenerateAndSaveAsync(TModel model, TemplateContext templateContext, IFileInfo outputFileInfo)
         {
             var htmlSource = Generate(model, templateContext);
-            await using (var writer = outputFileInfo.CreateText())
-            {
-                await writer.WriteAsync(htmlSource);
-            }
+            await using var writer = outputFileInfo.CreateText();
+            await writer.WriteAsync(htmlSource);
         }
     }
 }

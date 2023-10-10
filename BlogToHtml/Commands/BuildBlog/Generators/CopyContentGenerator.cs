@@ -1,4 +1,6 @@
-﻿namespace BlogToHtml.Commands.BuildBlog.Generators
+﻿using System.IO.Abstractions;
+
+namespace BlogToHtml.Commands.BuildBlog.Generators
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -9,7 +11,7 @@
         {
         }
 
-        public override Task GenerateContentAsync(FileInfo sourceFileInfo)
+        public override Task GenerateContentAsync(IFileInfo sourceFileInfo)
         {
             var outputFileInfo = GetOutputFileInfo(sourceFileInfo);
             EnsureOutputPathExists(outputFileInfo);

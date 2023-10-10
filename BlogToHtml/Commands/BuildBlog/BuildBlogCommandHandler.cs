@@ -1,26 +1,29 @@
-﻿namespace BlogToHtml.Commands.BuildBlog
+﻿using System.IO.Abstractions;
+
+namespace BlogToHtml.Commands.BuildBlog
 {
-    using BlogToHtml.Commands.BuildBlog.Generators;
-    using BlogToHtml.Commands.BuildBlog.Models;
+    using Generators;
+    using Models;
     using RazorEngine.Configuration;
     using RazorEngine.Templating;
     using Serilog;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     public class BuildBlogCommandHandler
     {
         private readonly ILogger logger;
+        private readonly IFileSystem fileSystem;
         private readonly BuildBlogOptions options;
         private readonly IRazorEngineService razorEngineService;
-        private readonly Dictionary<string, IContentGenerator> contentGeneratorsByFileExtension = new Dictionary<string, IContentGenerator>();
-        private readonly List<ISummaryContentGenerator> summaryContentGenerators = new List<ISummaryContentGenerator>();
+        private readonly Dictionary<string, IContentGenerator> contentGeneratorsByFileExtension = new();
+        private readonly List<ISummaryContentGenerator> summaryContentGenerators = new();
 
-        public BuildBlogCommandHandler(BuildBlogOptions options)
+        public BuildBlogCommandHandler(IFileSystem fileSystem, BuildBlogOptions options)
         {
             logger = Log.ForContext<BuildBlogCommandHandler>();
+            this.fileSystem = fileSystem;
             this.options = options;
 
             var config = new TemplateServiceConfiguration
@@ -86,28 +89,31 @@
 
         private GeneratorContext CreateGeneratorContext()
         {
-            var contentDirectory = options.ContentDirectory.ToDirectoryInfo();
-            var outputDirectory = options.OutputDirectory.ToDirectoryInfo(true);
+            var contentDirectory = fileSystem.ToDirectoryInfo(options.ContentDirectory);
+            var outputDirectory = fileSystem.ToDirectoryInfo(options.OutputDirectory, true);
 
-            return new GeneratorContext(razorEngineService, contentDirectory, outputDirectory);
+            return new GeneratorContext(razorEngineService, fileSystem, contentDirectory, outputDirectory);
         }
 
         private async Task GenerateArticlesAsync(GeneratorContext generatorContext)
         {
-            await generatorContext.ContentDirectory.RecurseAsync(async f =>
+            foreach (var f in generatorContext.ContentFiles)
             {
                 // Execute generator base on file type
-                var fileExtention = f.Extension?.ToLower() ?? string.Empty;
-                if (contentGeneratorsByFileExtension.TryGetValue(fileExtention, out var contentGenerator))
+                // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+                var fileExtension = f.Extension?.ToLower() ?? string.Empty;
+                if (contentGeneratorsByFileExtension.TryGetValue(fileExtension, out var contentGenerator))
                 {
                     logger.Information("Generating article for {FileName}...", f.FullName);
                     await contentGenerator.GenerateContentAsync(f);
                 }
                 else
                 {
-                    logger.Warning("Skipping file {FileName} as no content generator registered for file extensions {FileExtension}", f.FullName, fileExtention);
+                    logger.Warning(
+                        "Skipping file {FileName} as no content generator registered for file extensions {FileExtension}",
+                        f.FullName, fileExtension);
                 }
-            });
+            }
         }
     }
 }

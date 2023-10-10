@@ -1,34 +1,35 @@
 ﻿using System.IO;
+using System.IO.Abstractions;
 using System.Threading.Tasks;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
     internal abstract class ContentGeneratorBase : IContentGenerator
     {
-        protected readonly GeneratorContext generatorContext;
+        protected readonly GeneratorContext GeneratorContext;
 
         protected ContentGeneratorBase(GeneratorContext generatorContext)
         {
-            this.generatorContext = generatorContext;
+            GeneratorContext = generatorContext;
         }
 
-        public abstract Task GenerateContentAsync(FileInfo sourceFileInfo);
+        public abstract Task GenerateContentAsync(IFileInfo sourceFileInfo);
 
-        protected void EnsureOutputPathExists(FileInfo outputFileInfo)
+        protected void EnsureOutputPathExists(IFileInfo outputFileInfo)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFileInfo.FullName));
+            GeneratorContext.FileSystem.Directory.CreateDirectory(Path.GetDirectoryName(outputFileInfo.FullName)!);
         }
 
-        protected FileInfo GetOutputFileInfo(FileInfo sourceFileInfo, string? newFileExtension = null)
+        protected IFileInfo GetOutputFileInfo(IFileInfo sourceFileInfo, string? newFileExtension = null)
         {
-            var fileName = sourceFileInfo.FullName.Replace(generatorContext.ContentDirectory.FullName, generatorContext.OutputDirectory.FullName);
+            var fileName = sourceFileInfo.FullName.Replace(GeneratorContext.ContentDirectory.FullName, GeneratorContext.OutputDirectory.FullName);
 
             if (newFileExtension != null)
             {
                 fileName = Path.ChangeExtension(fileName, newFileExtension);
             }
 
-            return new FileInfo(fileName);
+            return GeneratorContext.FileSystem.FileInfo.New(fileName);
         }
     }
 }

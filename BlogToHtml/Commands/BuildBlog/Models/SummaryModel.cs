@@ -1,15 +1,16 @@
-﻿namespace BlogToHtml.Commands.BuildBlog.Models
+﻿using System.IO.Abstractions;
+
+namespace BlogToHtml.Commands.BuildBlog.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using YamlDotNet.Serialization;
 
     public class SummaryModel
     {
         [YamlMember(Alias = "title")]
-        public string Title { get; set; } = "Untitled Blogpost";
+        public string Title { get; set; } = "Untitled Blog post";
 
         [YamlMember(Alias = "abstract")]
         public string Abstract { get; set; } = string.Empty;
@@ -23,7 +24,7 @@
         public DateTime? PublicationDate { get; set; }
 
         [YamlIgnore]
-        public FileInfo? OutputFileInfo { get; set; }
+        public IFileInfo? OutputFileInfo { get; set; }
 
         public SummaryModel Clone()
         {
