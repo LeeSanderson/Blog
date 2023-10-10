@@ -24,13 +24,7 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
         public MarkdownToHtmlContentGenerator(GeneratorContext generatorContext): base(generatorContext)
         {
             this.articleTemplate = new ArticleTemplate(generatorContext.RazorEngineService);
-            this.pipeline = new MarkdownPipelineBuilder()
-                .UseBootstrap()
-                .UseYamlFrontMatter()
-                .UseAdvancedExtensions()
-                .UsePrism()
-                .Build();
-
+            this.pipeline = MarkdownPipelineFactory.GetStandardPipeline();
             this.frontMatterProcessor = new FrontMatterProcessor();
         }
 

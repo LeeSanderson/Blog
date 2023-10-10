@@ -23,6 +23,9 @@ namespace BlogToHtml.Commands.BuildBlog.Models
         [YamlMember(Alias = "date")]
         public DateTime? PublicationDate { get; set; }
 
+        [YamlMember(Alias = "status")]
+        public PublicationStatus PublicationStatus { get; set; }
+
         [YamlIgnore]
         public IFileInfo? OutputFileInfo { get; set; }
 
@@ -38,4 +41,10 @@ namespace BlogToHtml.Commands.BuildBlog.Models
             }; 
         }
     }
+}
+
+public enum PublicationStatus
+{
+    Draft,
+    Published
 }
