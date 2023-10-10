@@ -4,7 +4,6 @@ namespace BlogToHtml.Commands.BuildBlog
 {
     using Generators;
     using Models;
-    using RazorEngine.Configuration;
     using RazorEngine.Templating;
     using Serilog;
     using System;
@@ -25,12 +24,7 @@ namespace BlogToHtml.Commands.BuildBlog
             logger = Log.ForContext<BuildBlogCommandHandler>();
             this.fileSystem = fileSystem;
             this.options = options;
-
-            var config = new TemplateServiceConfiguration
-            {
-                TemplateManager = new EmbeddedResourceTemplateManager(typeof(BuildBlogCommandHandler))
-            };
-            this.razorEngineService = RazorEngineService.Create(config);
+            razorEngineService = RazorEngineFactory.CreateRazorEngineService();
         }
 
         public async Task<int> RunAsync()

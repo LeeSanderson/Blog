@@ -1,8 +1,8 @@
 ﻿using System.IO.Abstractions;
+using System.Linq;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    using System.IO;
     using System.Threading.Tasks;
     using Models;
     using Markdig;
@@ -10,10 +10,9 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using Markdig.Renderers.Html;
-    using MarkdigExtensions.Prism;
     using System;
 
-    internal class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
+    public class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
     {
         private readonly ArticleTemplate articleTemplate;
         private readonly MarkdownPipeline pipeline;
@@ -36,7 +35,7 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
                 markdownSource = await reader.ReadToEndAsync();
             }
 
-            var articleModel = ConvertMarkdownToModel(markdownSource);
+            var articleModel = ConvertMarkdownToModel(sourceFileInfo, markdownSource);
             var outputFileInfo = GetOutputFileInfo(sourceFileInfo, "html");
             EnsureOutputPathExists(outputFileInfo);
             articleModel.OutputFileInfo = outputFileInfo;
@@ -47,10 +46,10 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             ArticleGenerated?.Invoke(this, articleModel);
         }
 
-        private ArticleModel ConvertMarkdownToModel(string markdownSource)
+        private ArticleModel ConvertMarkdownToModel(IFileInfo sourceFileInfo, string markdownSource)
         {
             var document = MarkdownParser.Parse(markdownSource, this.pipeline);
-            RewriteInternalLinks(document);
+            RewriteInternalLinks(sourceFileInfo, document);
             return CreateArticleModel(document);
         }
 
@@ -61,14 +60,14 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             return model;
         }
 
-        private static void RewriteInternalLinks(MarkdownObject document)
+        private void RewriteInternalLinks(IFileInfo sourceFileInfo, MarkdownObject document)
         {
             foreach (var descendant in document.Descendants())
             {
                 switch (descendant)
                 {
                     case LinkInline {Url: not null} link when !link.Url.StartsWith("http"):
-                        link.Url = link.Url.Replace(".md", ".html");
+                        link.Url = Resolve(sourceFileInfo, link.Url).Replace(".md", ".html");
                         break;
                     case AutolinkInline:
                     case LinkInline:
@@ -76,6 +75,27 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
                         break;
                 }
             }
+        }
+
+        private string Resolve(IFileInfo sourceFileInfo, string linkUrl)
+        {
+            // Resolve ambiguous Obsidian file links
+            // Obsidian will create markdown links in the format `[Link](Link.md)` as long as Link.md is unique
+            // If the name is not unique then the path will be included e.g. `[Link in folder 1](Output/Folder1/Link.md)`
+            // and `[Link in Folder 2](Output/Folder2/Link.md)`
+            if (linkUrl.Contains("/"))
+            {
+                return linkUrl; // Assume name already resolved
+            }
+
+            // Find file
+            var linkedFile = GeneratorContext.ContentFiles.FirstOrDefault(x => x.Name == linkUrl);
+            if (linkedFile == null)
+            {
+                return linkUrl;
+            }
+
+            return sourceFileInfo.GetRelativePathTo(linkedFile);
         }
     }
 }

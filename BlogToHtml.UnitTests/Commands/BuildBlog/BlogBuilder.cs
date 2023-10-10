@@ -69,7 +69,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             {
                 var frontMatter = $"{FrontMatterDelimiter}{Environment.NewLine}{yamlSerializer.Serialize(article)}{Environment.NewLine}{FrontMatterDelimiter}";
                 
-                await File.WriteAllTextAsync(
+                await fileSystem.File.WriteAllTextAsync(
                     article.OutputFileInfo!.FullName,
                     $"{frontMatter}{Environment.NewLine}{Environment.NewLine}{article.Content}");
 

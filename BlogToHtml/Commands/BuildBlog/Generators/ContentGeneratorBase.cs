@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    internal abstract class ContentGeneratorBase : IContentGenerator
+    public abstract class ContentGeneratorBase : IContentGenerator
     {
         protected readonly GeneratorContext GeneratorContext;
 

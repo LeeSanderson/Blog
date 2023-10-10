@@ -4,7 +4,7 @@ using RazorEngine.Templating;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    internal class GeneratorContext
+    public class GeneratorContext
     {
         public IRazorEngineService RazorEngineService { get; }
         public IFileSystem FileSystem { get; }
