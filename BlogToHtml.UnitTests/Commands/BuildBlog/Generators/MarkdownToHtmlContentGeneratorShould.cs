@@ -50,7 +50,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         }
 
         [Fact]
-        public async Task FindLinkToAmbiguousArticleInSameFolder()
+        public async Task ResolveLinkToAmbiguousArticleInSameFolder()
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
@@ -70,7 +70,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         }
 
         [Fact]
-        public async Task FindLinkToOtherArticleIfAmbiguous()
+        public async Task ResolveLinkToOtherAmbiguousArticle()
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
@@ -89,6 +89,45 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
                 .Contain(@"<a href=""../Compute/VirtualMachines.html"">VMs</a>");
         }
 
+        [Fact]
+        public async Task ResolveLinkToAmbiguousImageInSameFolder()
+        {
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
+            {
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs ![VMs](VM.png)") },
+                { @"c:\Content\Azure\Compute\VM.png", new MockFileData(new byte[] { 0x1b, 0x2b, 0x3b }) },
+            });
+            var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
+            var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Azure\Compute\VirtualMachines.md");
+
+            await generator.GenerateContentAsync(sourceFile);
+
+            fileSystem
+                .GetFile(@"c:\Output\Azure\Compute\VirtualMachines.html")
+                .TextContents
+                .Should()
+                .Contain(@"<img src=""VM.png"" class=""img-fluid"" alt=""VMs"" />");
+        }
+
+        [Fact]
+        public async Task ResolveLinkToAmbiguousImageInOtherFolder()
+        {
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
+            {
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs ![VMs](VM.png)") },
+                { @"c:\Content\Azure\Images\VM.png", new MockFileData(new byte[] { 0x1b, 0x2b, 0x3b }) },
+            });
+            var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
+            var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Azure\Compute\VirtualMachines.md");
+
+            await generator.GenerateContentAsync(sourceFile);
+
+            fileSystem
+                .GetFile(@"c:\Output\Azure\Compute\VirtualMachines.html")
+                .TextContents
+                .Should()
+                .Contain(@"<img src=""../Images/VM.png"" class=""img-fluid"" alt=""VMs"" />");
+        }
 
         private static MarkdownToHtmlContentGenerator CreateMarkdownToHtmlContentGenerator(MockFileSystem fileSystem)
         {
