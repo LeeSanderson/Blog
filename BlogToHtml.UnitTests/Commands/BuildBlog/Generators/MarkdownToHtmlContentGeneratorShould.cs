@@ -13,21 +13,50 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         [Fact]
         public async Task GenerateExpectedHtml()
         {
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
-            {
-                { @"c:\Content\Test1.md", new MockFileData("# This is a H1") }
-            });
-            var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
-            var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Test1.md");
-
-            await generator.GenerateContentAsync(sourceFile);
-
-            fileSystem
-                .GetFile(@"c:\Output\Test1.html")
+            var outputFile = await GenerateFile("# This is a H1");
+            outputFile
                 .TextContents
                 .Should()
                 .Contain(@"<h1 id=""this-is-a-h1"">This is a H1</h1>");
         }
+
+        [Fact]
+        public async Task GeneratesBulletList()
+        {
+            var outputFile = await GenerateFile(" - one");
+            outputFile
+                .TextContents
+                .RemoveAllWhiteSpace()
+                .Should()
+                .Contain(@"<ul><li>one</li></ul>");
+        }
+
+        [Fact]
+        public async Task GeneratesNestedBulletList()
+        {
+            var outputFile = await GenerateFile(@" 
+- one
+    - two");
+            outputFile
+                .TextContents
+                .RemoveAllWhiteSpace()
+                .Should()
+                .Contain(@"<ul><li>one<ul><li>two</li></ul></li></ul>");
+        }
+
+        [Fact]
+        public async Task GeneratesNestedBulletListWhenInputContainsNonBreakingSpaces()
+        {
+            var outputFile = await GenerateFile(@" 
+- one
+" + (char)0x0a + (char)0x0a + " - two");
+            outputFile
+                .TextContents
+                .RemoveAllWhiteSpace()
+                .Should()
+                .Contain(@"<ul><li>one<ul><li>two</li></ul></li></ul>");
+        }
+
 
         [Fact]
         public async Task GenerateLinkToOtherArticle()
@@ -137,6 +166,20 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
                 contentDirectory, outputDirectory);
             var generator = new MarkdownToHtmlContentGenerator(generatorContext);
             return generator;
+        }
+
+        private static async Task<MockFileData> GenerateFile(string content)
+        {
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
+            {
+                { @"c:\Content\Test1.md", new MockFileData(content) }
+            });
+            var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
+            var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Test1.md");
+
+            await generator.GenerateContentAsync(sourceFile);
+
+            return fileSystem.GetFile(@"c:\Output\Test1.html");
         }
     }
 }

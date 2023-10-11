@@ -2,7 +2,7 @@
   "profiles": {
     "BlogToHtml": {
       "commandName": "Project",
-      "commandLineArgs": " -c C:\\Dev\\Blog\\Content -o C:\\Dev\\Blog\\Output -x True"
+      "commandLineArgs": " -c C:\\PKM\\Output\\SixSidedDiceBlog -o C:\\Dev\\Personal\\Blog\\Output -x True"
     }
   }
 }

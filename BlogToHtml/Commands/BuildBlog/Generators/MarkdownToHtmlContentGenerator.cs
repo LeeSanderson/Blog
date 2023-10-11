@@ -33,6 +33,9 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             using (var reader = sourceFileInfo.OpenText())
             {
                 markdownSource = await reader.ReadToEndAsync();
+
+                // Replace non-breaking spaces added by Obsidian to support nested lists with regular spaces.
+                markdownSource = markdownSource.Replace((char)0x0A, ' ');
             }
 
             var articleModel = ConvertMarkdownToModel(sourceFileInfo, markdownSource);
