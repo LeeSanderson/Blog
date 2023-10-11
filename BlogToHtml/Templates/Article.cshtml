@@ -5,12 +5,14 @@
 }
 
 <div class="article-header">
-    @Model.PublicationDate?.ToString("MMM dd, yyyy")
-
+    <span class="article-date">@Model.PublicationDate?.ToString("MMM dd, yyyy")</span>
+    
+    <span class="article-tags">
     @foreach (var tag in Model.GetTags())
     {
         <span class="badge badge-info">@tag</span>
     }
+    </span>
 </div>
 
 @Raw(Model.Content)

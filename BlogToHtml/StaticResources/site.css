@@ -16,3 +16,22 @@ blockquote {
 h1, h2 {
     padding-bottom: .3em;
 }
+
+.img-fluid {
+    margin-left: 5%;
+    margin-right: 5%;
+    max-width: 90%;
+}
+
+.badge {
+    margin: 0.25em;
+}
+
+.article-tags {
+    float: right;
+    padding-right: 1rem;
+}
+
+.article-date {
+    padding-left: 1rem;
+}
