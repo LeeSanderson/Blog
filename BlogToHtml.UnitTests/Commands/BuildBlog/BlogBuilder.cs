@@ -41,8 +41,9 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             string markdownContent, 
             string title = "Untitled Blog post",
             string blogAbstract = "",
-            string[] tags = null,
-            DateTime? publicationDate = null)
+            string[]? tags = null,
+            DateTime? publicationDate = null,
+            PublicationStatus publicationStatus = PublicationStatus.Published)
         {
             var markdownContentFileName = Path.ChangeExtension(Path.Combine(inputDirectory.FullName, fileName), ".md");
             var markdownContentFile = fileSystem.FileInfo.New(markdownContentFileName);
@@ -53,8 +54,9 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
                     Content = markdownContent,
                     Title = title,
                     Abstract = blogAbstract,
-                    Tags = tags ?? Array.Empty<string>(),
+                    Tags = tags,
                     PublicationDate = publicationDate,
+                    PublicationStatus = publicationStatus
                 });
             return this;
         }

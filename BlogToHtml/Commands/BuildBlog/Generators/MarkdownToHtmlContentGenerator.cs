@@ -39,14 +39,17 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             }
 
             var articleModel = ConvertMarkdownToModel(sourceFileInfo, markdownSource);
-            var outputFileInfo = GetOutputFileInfo(sourceFileInfo, "html");
-            EnsureOutputPathExists(outputFileInfo);
-            articleModel.OutputFileInfo = outputFileInfo;
+            if (articleModel.PublicationStatus == PublicationStatus.Published)
+            {
+                var outputFileInfo = GetOutputFileInfo(sourceFileInfo, "html");
+                EnsureOutputPathExists(outputFileInfo);
+                articleModel.OutputFileInfo = outputFileInfo;
 
-            var templateContext = new TemplateContext(this.GeneratorContext.OutputDirectory, outputFileInfo);
-            await articleTemplate.GenerateAndSaveAsync(articleModel, templateContext, outputFileInfo);
-            
-            ArticleGenerated?.Invoke(this, articleModel);
+                var templateContext = new TemplateContext(this.GeneratorContext.OutputDirectory, outputFileInfo);
+                await articleTemplate.GenerateAndSaveAsync(articleModel, templateContext, outputFileInfo);
+
+                ArticleGenerated?.Invoke(this, articleModel);
+            }
         }
 
         private ArticleModel ConvertMarkdownToModel(IFileInfo sourceFileInfo, string markdownSource)

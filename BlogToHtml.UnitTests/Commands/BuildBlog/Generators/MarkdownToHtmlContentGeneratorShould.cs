@@ -63,8 +63,8 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
-                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs") },
-                { @"c:\Content\Azure\Storage\StorageAccounts.md", new MockFileData("# This is about storage of [VMs](../Compute/VirtualMachines.md)") },
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", CreateArticleFrom("# This is about VMs") },
+                { @"c:\Content\Azure\Storage\StorageAccounts.md", CreateArticleFrom("# This is about storage of [VMs](../Compute/VirtualMachines.md)") },
             });
             var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
             var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Azure\Storage\StorageAccounts.md");
@@ -83,8 +83,8 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
-                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs") },
-                { @"c:\Content\Azure\Compute\VMTypes.md", new MockFileData("# This is about types of [VMs](VirtualMachines.md)") },
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", CreateArticleFrom("# This is about VMs") },
+                { @"c:\Content\Azure\Compute\VMTypes.md", CreateArticleFrom("# This is about types of [VMs](VirtualMachines.md)") },
             });
             var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
             var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Azure\Compute\VMTypes.md");
@@ -103,8 +103,8 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
-                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs") },
-                { @"c:\Content\Azure\Storage\StorageAccounts.md", new MockFileData("# This is about storage of [VMs](VirtualMachines.md)") },
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", CreateArticleFrom("# This is about VMs") },
+                { @"c:\Content\Azure\Storage\StorageAccounts.md", CreateArticleFrom("# This is about storage of [VMs](VirtualMachines.md)") },
             });
             var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
             var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Azure\Storage\StorageAccounts.md");
@@ -123,7 +123,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
-                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs ![VMs](VM.png)") },
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", CreateArticleFrom("# This is about VMs ![VMs](VM.png)") },
                 { @"c:\Content\Azure\Compute\VM.png", new MockFileData(new byte[] { 0x1b, 0x2b, 0x3b }) },
             });
             var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
@@ -143,7 +143,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
-                { @"c:\Content\Azure\Compute\VirtualMachines.md", new MockFileData("# This is about VMs ![VMs](VM.png)") },
+                { @"c:\Content\Azure\Compute\VirtualMachines.md", CreateArticleFrom("# This is about VMs ![VMs](VM.png)") },
                 { @"c:\Content\Azure\Images\VM.png", new MockFileData(new byte[] { 0x1b, 0x2b, 0x3b }) },
             });
             var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
@@ -172,7 +172,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
             {
-                { @"c:\Content\Test1.md", new MockFileData(content) }
+                { @"c:\Content\Test1.md", CreateArticleFrom(content) }
             });
             var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
             var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Test1.md");
@@ -180,6 +180,12 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
             await generator.GenerateContentAsync(sourceFile);
 
             return fileSystem.GetFile(@"c:\Output\Test1.html");
+        }
+
+        public static MockFileData CreateArticleFrom(string markdown)
+        {
+            const string frontMatter = "---\nstatus: Published\n---\n\n";
+            return new MockFileData(frontMatter + markdown);
         }
     }
 }

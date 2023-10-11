@@ -46,6 +46,19 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
         }
 
         [Fact]
+        public async Task Not_generate_pages_with_draft_status()
+        {
+            using var blogOutput =
+                await new BlogBuilder(new FileSystem())
+                    .AddContent("Example1.md", "# Heading 1", publicationDate: new DateTime(2022, 1, 1))
+                    .AddContent("Example2.md", "# Heading 2", publicationDate: new DateTime(2022, 1, 2), publicationStatus: PublicationStatus.Draft)
+                    .GenerateAsync();
+
+            var generatedIndexHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "index.html");
+            await Verifier.VerifyFile(generatedIndexHtmlFile.FullName);
+        }
+
+        [Fact]
         public async Task Generate_all_page_all_blog_articles()
         {
             using var blogOutput =
