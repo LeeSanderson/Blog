@@ -70,7 +70,7 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
                 switch (descendant)
                 {
                     case LinkInline {Url: not null} link when !link.Url.StartsWith("http"):
-                        link.Url = Resolve(sourceFileInfo, link.Url).Replace(".md", ".html");
+                        link.Url = ResolveAmbiguousInternalLinks(sourceFileInfo, link.Url).Replace(".md", ".html");
                         break;
                     case AutolinkInline:
                     case LinkInline:
@@ -80,7 +80,7 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             }
         }
 
-        private string Resolve(IFileInfo sourceFileInfo, string linkUrl)
+        private string ResolveAmbiguousInternalLinks(IFileInfo sourceFileInfo, string linkUrl)
         {
             // Resolve ambiguous Obsidian file links
             // Obsidian will create markdown links in the format `[Link](Link.md)` as long as Link.md is unique
