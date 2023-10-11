@@ -13,5 +13,6 @@
         "schemaless",
         "sixsideddice"
     ],
-    "cSpell.language": "en-GB"
+    "cSpell.language": "en-GB",
+    "liveServer.settings.port": 5501
 }
