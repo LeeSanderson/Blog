@@ -49,7 +49,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
         {
             var outputFile = await GenerateFile(@" 
 - one
-" + (char)0x0a + (char)0x0a + " - two");
+" + (char)0xa0 + (char)0xa0 + " - two");
             outputFile
                 .TextContents
                 .RemoveAllWhiteSpace()
