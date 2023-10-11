@@ -18,6 +18,7 @@ namespace BlogToHtml.Commands.BuildBlog
         private readonly IRazorEngineService razorEngineService;
         private readonly Dictionary<string, IContentGenerator> contentGeneratorsByFileExtension = new();
         private readonly List<ISummaryContentGenerator> summaryContentGenerators = new();
+        private readonly List<IEmbeddedContentGenerator> embeddedContentGenerators = new();
 
         public BuildBlogCommandHandler(IFileSystem fileSystem, BuildBlogOptions options)
         {
@@ -32,6 +33,7 @@ namespace BlogToHtml.Commands.BuildBlog
             try
             {
                 var generatorContext = CreateGeneratorContext();
+                RegisterEmbeddedContentGenerators(generatorContext);
                 RegisterContentGenerators(generatorContext);
                 RegisterSummaryContentGenerators(generatorContext);
 
@@ -45,7 +47,12 @@ namespace BlogToHtml.Commands.BuildBlog
                 {
                     await summaryContentGenerator.GenerateSummaryContentAsync();
                 }
-                
+
+                foreach (var embeddedContentGenerator in embeddedContentGenerators)
+                {
+                    await embeddedContentGenerator.GenerateContentAsync();
+                }
+
                 return 0; // Success
             }
             catch(Exception e)
@@ -53,6 +60,12 @@ namespace BlogToHtml.Commands.BuildBlog
                 logger.Error(e, "Blog Builder Command Failed!");
                 return 1; // Failure
             }
+        }
+
+        private void RegisterEmbeddedContentGenerators(GeneratorContext generatorContext)
+        {
+            embeddedContentGenerators.Clear();
+            embeddedContentGenerators.Add(new EmbeddedContentGenerator(generatorContext, "site.css"));
         }
 
         private void RegisterSummaryContentGenerators(GeneratorContext generatorContext)
