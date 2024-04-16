@@ -1,4 +1,7 @@
-﻿namespace BlogToHtml.Commands.BuildBlog
+﻿using System.Collections.Generic;
+using System.IO.Abstractions;
+
+namespace BlogToHtml.Commands.BuildBlog
 {
     using System;
     using System.IO;
@@ -6,13 +9,15 @@
 
     public static class DirectoryInfoExtensions
     {
-        public static DirectoryInfo ToDirectoryInfo(this string? path, bool createIfNotExists = false)
+        public static IDirectoryInfo ToDirectoryInfo(this IFileSystem fileSystem, string? path, bool createIfNotExists = false)
         {
-            var result = new DirectoryInfo(path);
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
+            var result = fileSystem.DirectoryInfo.New(path);
             if (!result.Exists && createIfNotExists)
             {
                 result.Create();
-                result = new DirectoryInfo(path);
+                result = fileSystem.DirectoryInfo.New(path);
             }
 
             if (!result.Exists)
@@ -23,7 +28,7 @@
             return result;
         }
 
-        public static async Task RecurseAsync(this DirectoryInfo directoryInfo, Func<FileInfo, Task> onFile, Func<DirectoryInfo, Task>? onDirectory = null)
+        private static async Task RecurseAsync(this IDirectoryInfo directoryInfo, Func<IFileInfo, Task> onFile, Func<IDirectoryInfo, Task>? onDirectory = null)
         {
             foreach (var fileInfo in directoryInfo.EnumerateFiles())
             {
@@ -41,7 +46,15 @@
             }
         }
 
-        public static async Task CleanAsync(this DirectoryInfo outputDirectory)
+        public static IEnumerable<IFileInfo> Recurse(this IDirectoryInfo directoryInfo)
+        {
+            foreach (var fileInfo in directoryInfo.EnumerateFiles("*.*", SearchOption.AllDirectories))
+            {
+                yield return fileInfo;
+            }
+        }
+
+        public static async Task CleanAsync(this IDirectoryInfo outputDirectory)
         {
             await outputDirectory.RecurseAsync(f => { f.Delete(); return Task.CompletedTask; }, d => { d.Delete(); return Task.CompletedTask; });
         }

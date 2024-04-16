@@ -1,7 +1,6 @@
 ﻿namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    using BlogToHtml.Commands.BuildBlog.Models;
-    using System;
+    using Models;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -30,9 +29,12 @@
             summaries.Add(model.Clone());
         }
 
-        public async Task GenerateSummaryPageAsync(TemplateBase<List<SummaryModel>> template, string outputFileName, List<SummaryModel> pageSummaries)
+        private async Task GenerateSummaryPageAsync(
+            TemplateBase<List<SummaryModel>> template,
+            string outputFileName,
+            List<SummaryModel> pageSummaries)
         {
-            var pageFileInfo = new FileInfo(Path.Combine(generatorContext.OutputDirectory.FullName, outputFileName));
+            var pageFileInfo = generatorContext.FileSystem.FileInfo.New(Path.Combine(generatorContext.OutputDirectory.FullName, outputFileName));
             var templateContext = new TemplateContext(generatorContext.OutputDirectory, pageFileInfo);
             await template.GenerateAndSaveAsync(
                 pageSummaries,

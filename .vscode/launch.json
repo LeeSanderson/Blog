@@ -13,7 +13,7 @@
             "program": "${workspaceFolder}/BlogToHtml/bin/Debug/netcoreapp3.1/BlogToHtml.dll",
             "args": [
                 "-c",
-                "${workspaceFolder}/Content",
+                "C:\\PKM\\Output\\SixSidedDiceBlog",
                 "-o",
                 "${workspaceFolder}/Output",
                 "-x",

@@ -1,10 +1,11 @@
-﻿namespace BlogToHtml.Commands.BuildBlog.Generators
+﻿using System.IO.Abstractions;
+
+namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    using System.IO;
     using System.Threading.Tasks;
 
     public interface IContentGenerator
     {
-        Task GenerateContentAsync(FileInfo sourceFileInfo);
+        Task GenerateContentAsync(IFileInfo sourceFileInfo);
     }
 }

@@ -1,18 +1,28 @@
-﻿namespace BlogToHtml.Commands.BuildBlog.Generators
+﻿using System.IO.Abstractions;
+using System.Linq;
+using RazorEngine.Templating;
+
+namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    using RazorEngine.Templating;
-    using System.IO;
-    internal class GeneratorContext
+    public class GeneratorContext
     {
         public IRazorEngineService RazorEngineService { get; }
-        public DirectoryInfo ContentDirectory { get; }
-        public DirectoryInfo OutputDirectory { get; }
+        public IFileSystem FileSystem { get; }
+        public IDirectoryInfo ContentDirectory { get; }
+        public IDirectoryInfo OutputDirectory { get; }
+        public IFileInfo[] ContentFiles { get; }
 
-        public GeneratorContext(IRazorEngineService razorEngineService, DirectoryInfo contentDirectory, DirectoryInfo outputDirectory)
+        public GeneratorContext(
+            IRazorEngineService razorEngineService, 
+            IFileSystem fileSystem,
+            IDirectoryInfo contentDirectory, 
+            IDirectoryInfo outputDirectory)
         {
             RazorEngineService = razorEngineService;
+            FileSystem = fileSystem;
             ContentDirectory = contentDirectory;
             OutputDirectory = outputDirectory;
+            ContentFiles = contentDirectory.Recurse().ToArray();
         }
     }
 }

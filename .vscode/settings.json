@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "autocrlf",
+        "dialog",
         "Entra",
         "Jeffries",
         "Kanban",
@@ -12,5 +13,6 @@
         "schemaless",
         "sixsideddice"
     ],
-    "cSpell.language": "en-GB"
+    "cSpell.language": "en-GB",
+    "liveServer.settings.port": 5501
 }

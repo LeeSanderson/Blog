@@ -1,16 +1,18 @@
 ﻿using BlogToHtml.Commands.BuildBlog.Models;
-using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
     public class TemplateContext
     {
-        public DirectoryInfo Root { get; }
+        public IDirectoryInfo Root { get; }
 
-        public FileInfo OutputFile { get; }
+        public IFileInfo OutputFile { get; }
 
-        public string ReleativeRootPath
+        // ReSharper disable once UnusedMember.Global
+        // [Used in templates]
+        public string RelativeRootPath
         {
             get
             {
@@ -22,15 +24,17 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             }
         }
 
-        public TemplateContext(DirectoryInfo root, FileInfo outputFile)
+        public TemplateContext(IDirectoryInfo root, IFileInfo outputFile)
         {
             Root = root;
             OutputFile = outputFile;
         }
 
+        // ReSharper disable once UnusedMember.Global
+        // [Used in templates]
         public string RelativeUrlTo(SummaryModel model)
         {
-            var outputPath = OutputFile.Directory.FullName;
+            var outputPath = OutputFile!.Directory!.FullName;
             var relativePath = model.OutputFileInfo!.FullName.Replace(outputPath, "./");
             return relativePath.Replace('\\', '/');
         }

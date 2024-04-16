@@ -1,4 +1,6 @@
-﻿namespace BlogToHtml.UnitTests.Commands.BuildBlog
+﻿using System.IO.Abstractions;
+
+namespace BlogToHtml.UnitTests.Commands.BuildBlog
 {
     using System;
     using System.Collections.Generic;
@@ -12,36 +14,39 @@
 
     internal class BlogBuilder
     {
+        private readonly IFileSystem fileSystem;
         private const string YamlDateFormat = "yyyy-MM-dd HH:mm:ss";
         private const string FrontMatterDelimiter = "---";
 
-        private readonly DirectoryInfo inputDirectory;
-        private readonly DirectoryInfo ouputDirectory;
+        private readonly IDirectoryInfo inputDirectory;
+        private readonly IDirectoryInfo outputDirectory;
         private readonly List<ArticleModel> articles = new List<ArticleModel>();
-        private readonly ISerializer yamlSerialiser;
+        private readonly ISerializer yamlSerializer;
 
-        public BlogBuilder()
+        public BlogBuilder(IFileSystem fileSystem)
         {
-            inputDirectory = Path.Combine(".", "Input").ToDirectoryInfo(true);
-            ouputDirectory = Path.Combine(".", "Output").ToDirectoryInfo(true);
+            this.fileSystem = fileSystem;
+            inputDirectory = fileSystem.ToDirectoryInfo(Path.Combine(".", "Input"), true);
+            outputDirectory = fileSystem.ToDirectoryInfo(Path.Combine(".", "Output"), true);
 
             var builder = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, YamlDateFormat));
 
-            this.yamlSerialiser = builder.Build();
+            this.yamlSerializer = builder.Build();
         }
 
         public BlogBuilder AddContent(
             string fileName, 
             string markdownContent, 
-            string title = "Untitled Blogpost",
+            string title = "Untitled Blog post",
             string blogAbstract = "",
-            string tags = "",
-            DateTime? publicationDate = null)
+            string[]? tags = null,
+            DateTime? publicationDate = null,
+            PublicationStatus publicationStatus = PublicationStatus.Published)
         {
             var markdownContentFileName = Path.ChangeExtension(Path.Combine(inputDirectory.FullName, fileName), ".md");
-            FileInfo markdownContentFile = new FileInfo(markdownContentFileName);
+            var markdownContentFile = fileSystem.FileInfo.New(markdownContentFileName);
             articles.Add(
                 new ArticleModel 
                 { 
@@ -51,6 +56,7 @@
                     Abstract = blogAbstract,
                     Tags = tags,
                     PublicationDate = publicationDate,
+                    PublicationStatus = publicationStatus
                 });
             return this;
         }
@@ -58,22 +64,27 @@
         public async Task<BlogOutput> GenerateAsync()
         {
             await inputDirectory.CleanAsync();
-            await ouputDirectory.CleanAsync();
+            await outputDirectory.CleanAsync();
 
             var output = new BlogOutput();
             foreach (var article in articles)
             {
-                var frontMatter = $"{FrontMatterDelimiter}{Environment.NewLine}{yamlSerialiser.Serialize(article)}{Environment.NewLine}{FrontMatterDelimiter}";
-                File.WriteAllText(article.OutputFileInfo.FullName, $"{frontMatter}{Environment.NewLine}{Environment.NewLine}{article.Content}");
+                var frontMatter = $"{FrontMatterDelimiter}{Environment.NewLine}{yamlSerializer.Serialize(article)}{Environment.NewLine}{FrontMatterDelimiter}";
+                
+                await fileSystem.File.WriteAllTextAsync(
+                    article.OutputFileInfo!.FullName,
+                    $"{frontMatter}{Environment.NewLine}{Environment.NewLine}{article.Content}");
+
                 output.InputFiles.Add(article.OutputFileInfo);
             }
 
             var buildBlogCommand =
                 new BuildBlogCommandHandler(
+                    fileSystem,
                     new BuildBlogOptions
                     {
                         ContentDirectory = inputDirectory.FullName,
-                        OutputDirectory = ouputDirectory.FullName,
+                        OutputDirectory = outputDirectory.FullName,
                         Clean = true
                     });
 
@@ -83,16 +94,16 @@
                 throw new Exception($"Content generation failed with error code {result}");
             }
 
-            ouputDirectory.Refresh();
-            output.GeneratedFiles.AddRange(ouputDirectory.GetFiles());
+            outputDirectory.Refresh();
+            output.GeneratedFiles.AddRange(outputDirectory.GetFiles());
             return output;
         }
     }
 
     internal sealed class BlogOutput : IDisposable
     {
-        public List<FileInfo> InputFiles { get; } = new List<FileInfo>();
-        public List<FileInfo> GeneratedFiles { get; } = new List<FileInfo>();
+        public List<IFileInfo> InputFiles { get; } = new List<IFileInfo>();
+        public List<IFileInfo> GeneratedFiles { get; } = new List<IFileInfo>();
 
         public void Dispose()
         {
