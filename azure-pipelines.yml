@@ -36,61 +36,9 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: PowerShell@2
-  displayName: Generate Blog content 
+- task: PublishPipelineArtifact@1
+  displayName: Publish Blog Generator Artifact 
   condition: succeeded()
   inputs:
-    targetType: inline
-    workingDirectory: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/net6/'
-    script: |
-      write-host "current directory = $(get-location)"
-      & .\BlogToHtml.exe -c "$(Build.SourcesDirectory)/Content" -o "$(Build.SourcesDirectory)/Output" -x True
-
-- task: PowerShell@2 
-  displayName: Clone existing GitHub pages repository
-  condition: succeeded()
-  inputs:
-    targetType: inline
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
-    script: |
-      write-host "current directory = $(get-location)"
-      git clone https://LeeSanderson:$(GitHubAccessToken)@github.com/LeeSanderson/leesanderson.github.io.git --branch=main SiteSource --quiet
-      if ($lastexitcode -gt 0)
-      {
-        write-host "Clone failed - check GitHubAccessToken is valid. Error code $lastexitcode"
-      }      
-
-- task: CopyFiles@2
-  displayName: Copy generated output to correct site folder
-  condition: succeeded()
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)/Output/'
-    contents: '**'
-    OverWrite: True
-    targetFolder: '$(System.DefaultWorkingDirectory)/SiteSource/Blog'
-    
-- task: PowerShell@2 
-  displayName: Update GitHub pages repository
-  condition: succeeded()
-  inputs:
-    targetType: inline
-    workingDirectory: '$(System.DefaultWorkingDirectory)/SiteSource'
-    script: |
-      git config core.autocrlf false
-      git config user.email lee.sndrsn@gmail.com
-      git config user.name LeeSanderson
-      git add *
-      git commit --allow-empty -m "Blog Update $(Build.BuildId)"      
-      if ($lastexitcode -gt 0)
-      {
-        write-host "Commit failed. Error code $lastexitcode"
-        [Environment]::Exit(1)
-      }      
-
-      git push --quiet
-      if ($lastexitcode -gt 0)
-      {
-        write-host "Push failed. Error code $lastexitcode"
-        [Environment]::Exit(1)
-      }      
-
+    targetPath: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/net6/'
+    artifactName: 'blogToHtml'
