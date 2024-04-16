@@ -35,3 +35,7 @@ h1, h2 {
 .article-date {
     padding-left: 1rem;
 }
+
+ol, ul {
+    line-height: 2;
+}
