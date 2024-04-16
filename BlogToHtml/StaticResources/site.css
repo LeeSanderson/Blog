@@ -36,6 +36,6 @@ h1, h2 {
     padding-left: 1rem;
 }
 
-ol, ul {
-    line-height: 2;
+li {
+    margin-bottom: 1rem;
 }
