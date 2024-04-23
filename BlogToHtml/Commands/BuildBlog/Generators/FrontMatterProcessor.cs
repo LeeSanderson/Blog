@@ -17,7 +17,7 @@
         {
             var builder = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, YamlDateFormat));
+                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
 
             this.yamlDeserialiser = builder.Build();
         }

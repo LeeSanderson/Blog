@@ -20,7 +20,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
 
         private readonly IDirectoryInfo inputDirectory;
         private readonly IDirectoryInfo outputDirectory;
-        private readonly List<ArticleModel> articles = new List<ArticleModel>();
+        private readonly List<ArticleModel> articles = new();
         private readonly ISerializer yamlSerializer;
 
         public BlogBuilder(IFileSystem fileSystem)
@@ -31,7 +31,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
 
             var builder = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, YamlDateFormat));
+                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
 
             this.yamlSerializer = builder.Build();
         }
