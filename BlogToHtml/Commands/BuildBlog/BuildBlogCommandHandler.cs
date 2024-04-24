@@ -1,7 +1,6 @@
-﻿
-namespace BlogToHtml.Commands.BuildBlog
+﻿namespace BlogToHtml.Commands.BuildBlog
 {
-    using BlogToHtml.Generators;
+    using Generators;
     using Models;
     using RazorEngine.Templating;
     using Serilog;

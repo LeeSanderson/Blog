@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using BlogToHtml.Commands.GenerateHeroImage;
 
 namespace BlogToHtml
 {
@@ -18,10 +19,14 @@ namespace BlogToHtml
 
             Log.Logger = loggerConfiguration.CreateLogger();
 
-            await Parser.Default.ParseArguments<BuildBlogOptions>(args)
+            await Parser.Default.ParseArguments<
+                    BuildBlogOptions,
+                    GenerateHeroImageOptions
+                >(args)
                 .MapResult(
-                    options => new BuildBlogCommandHandler(new FileSystem(), options).RunAsync(),
-                    errors => Task.FromResult(1));
+                    (BuildBlogOptions options) => new BuildBlogCommandHandler(new FileSystem(), options).RunAsync(),
+                    (GenerateHeroImageOptions options) => new GenerateHeroImageCommandHandler(new FileSystem(), options).RunAsync(),
+                    _ => Task.FromResult(1));
         }
     }
 }
