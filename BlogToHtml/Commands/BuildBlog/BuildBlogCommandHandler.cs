@@ -1,14 +1,14 @@
-﻿using System.IO.Abstractions;
-
+﻿
 namespace BlogToHtml.Commands.BuildBlog
 {
-    using Generators;
+    using BlogToHtml.Generators;
     using Models;
     using RazorEngine.Templating;
     using Serilog;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.IO.Abstractions;
 
     public class BuildBlogCommandHandler
     {

@@ -7,7 +7,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
     using System.IO;
     using System.Threading.Tasks;
     using BlogToHtml.Commands.BuildBlog;
-    using BlogToHtml.Commands.BuildBlog.Models;
+    using Models;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.Converters;
     using YamlDotNet.Serialization.NamingConventions;
