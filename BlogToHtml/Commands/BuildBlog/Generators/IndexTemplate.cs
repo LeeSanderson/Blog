@@ -1,6 +1,6 @@
 ﻿namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    using BlogToHtml.Commands.BuildBlog.Models;
+    using Models;
     using RazorEngine.Templating;
     using System.Collections.Generic;
 

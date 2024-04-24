@@ -22,9 +22,9 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
 
         public MarkdownToHtmlContentGenerator(GeneratorContext generatorContext): base(generatorContext)
         {
-            this.articleTemplate = new ArticleTemplate(generatorContext.RazorEngineService);
-            this.pipeline = MarkdownPipelineFactory.GetStandardPipeline();
-            this.frontMatterProcessor = new FrontMatterProcessor();
+            articleTemplate = new ArticleTemplate(generatorContext.RazorEngineService);
+            pipeline = MarkdownPipelineFactory.GetStandardPipeline();
+            frontMatterProcessor = new FrontMatterProcessor();
         }
 
         public override async Task GenerateContentAsync(IFileInfo sourceFileInfo)
@@ -61,8 +61,8 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
 
         private ArticleModel CreateArticleModel(MarkdownDocument document)
         {
-            var model = this.frontMatterProcessor.GetFrontMatter<ArticleModel>(document);
-            model.Content = document.ToHtml(this.pipeline);
+            var model = frontMatterProcessor.GetFrontMatter<ArticleModel>(document);
+            model.Content = document.ToHtml(pipeline);
             return model;
         }
 
@@ -89,7 +89,7 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             // Obsidian will create markdown links in the format `[Link](Link.md)` as long as Link.md is unique
             // If the name is not unique then the path will be included e.g. `[Link in folder 1](Output/Folder1/Link.md)`
             // and `[Link in Folder 2](Output/Folder2/Link.md)`
-            if (linkUrl.Contains("/"))
+            if (linkUrl.Contains('/'))
             {
                 return linkUrl; // Assume name already resolved
             }

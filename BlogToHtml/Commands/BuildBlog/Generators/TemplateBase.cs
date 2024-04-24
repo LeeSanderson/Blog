@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlogToHtml.Commands.BuildBlog.Generators
 {
-    internal abstract class TemplateBase<TModel>
+    public abstract class TemplateBase<TModel>
     {
         private readonly IRazorEngineService razorEngineService;
         private readonly string templateKey;

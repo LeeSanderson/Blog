@@ -170,7 +170,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
 
         private static async Task<MockFileData> GenerateFile(string content)
         {
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
             {
                 { @"c:\Content\Test1.md", CreateArticleFrom(content) }
             });
@@ -182,7 +182,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog.Generators
             return fileSystem.GetFile(@"c:\Output\Test1.html");
         }
 
-        public static MockFileData CreateArticleFrom(string markdown)
+        private static MockFileData CreateArticleFrom(string markdown)
         {
             const string frontMatter = "---\nstatus: Published\n---\n\n";
             return new MockFileData(frontMatter + markdown);
