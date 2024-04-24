@@ -27,7 +27,6 @@ namespace BlogToHtml.Commands.BuildBlog.Generators
             var html = heroImagesTemplate.Generate(model, templateContext);
             var result = await htmlToImageConverter.ConvertAsync(imageConversionSettings, html);
 
-            await using var writer = outputFileInfo.Create();
             await GeneratorContext.FileSystem.File.WriteAllBytesAsync(outputFileInfo.FullName, result);
         }
     }
