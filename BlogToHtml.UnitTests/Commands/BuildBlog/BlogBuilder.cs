@@ -6,6 +6,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
+    using BlogToHtml;
     using BlogToHtml.Commands.BuildBlog;
     using Models;
     using YamlDotNet.Serialization;

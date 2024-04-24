@@ -9,6 +9,7 @@ namespace BlogToHtml.Commands.BuildBlog
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using System.IO.Abstractions;
+    using BlogToHtml;
 
     public class BuildBlogCommandHandler
     {

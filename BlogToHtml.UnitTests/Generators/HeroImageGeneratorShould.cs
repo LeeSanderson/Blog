@@ -4,13 +4,13 @@ using FluentAssertions;
 
 namespace BlogToHtml.UnitTests.Generators
 {
-    using BlogToHtml.Commands.BuildBlog;
     using System.IO.Abstractions.TestingHelpers;
     using Xunit;
     using System.Collections.Generic;
     using System;
     using BlogToHtml.Generators;
     using Models;
+    using BlogToHtml;
 
     public class HeroImageGeneratorShould
     {

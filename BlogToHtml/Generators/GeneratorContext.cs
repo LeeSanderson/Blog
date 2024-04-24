@@ -1,6 +1,5 @@
 ﻿using System.IO.Abstractions;
 using System.Linq;
-using BlogToHtml.Commands.BuildBlog;
 using RazorEngine.Templating;
 
 namespace BlogToHtml.Generators

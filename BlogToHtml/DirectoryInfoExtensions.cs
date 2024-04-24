@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 
-namespace BlogToHtml.Commands.BuildBlog
+namespace BlogToHtml
 {
     using System;
     using System.IO;
@@ -41,7 +41,7 @@ namespace BlogToHtml.Commands.BuildBlog
                 await childDirectoryInfo.RecurseAsync(onFile, onDirectory);
                 if (onDirectory != null)
                 {
-                    await onDirectory (childDirectoryInfo);
+                    await onDirectory(childDirectoryInfo);
                 }
             }
         }

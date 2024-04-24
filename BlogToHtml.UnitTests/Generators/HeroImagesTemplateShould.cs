@@ -1,5 +1,4 @@
 ﻿using System.IO.Abstractions.TestingHelpers;
-using BlogToHtml.Commands.BuildBlog;
 using BlogToHtml.Generators;
 using BlogToHtml.Models;
 using FluentAssertions;

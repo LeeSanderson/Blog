@@ -1,7 +1,7 @@
 ﻿using RazorEngine.Configuration;
 using RazorEngine.Templating;
 
-namespace BlogToHtml.Commands.BuildBlog
+namespace BlogToHtml
 {
     public static class RazorEngineFactory
     {
@@ -9,7 +9,7 @@ namespace BlogToHtml.Commands.BuildBlog
         {
             var config = new TemplateServiceConfiguration
             {
-                TemplateManager = new EmbeddedResourceTemplateManager(typeof(BuildBlogCommandHandler))
+                TemplateManager = new EmbeddedResourceTemplateManager(typeof(RazorEngineFactory))
             };
 
             return RazorEngineService.Create(config);

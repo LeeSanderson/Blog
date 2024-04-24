@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
-using BlogToHtml.Commands.BuildBlog;
 using BlogToHtml.Generators;
 using FluentAssertions;
 using Xunit;
