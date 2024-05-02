@@ -36,7 +36,12 @@ namespace BlogToHtml.Commands.GenerateHeroImage
                         outputDirectory);
                 var generator = new HeroImageGenerator(generatorContext);
 
-                var model = new HeroImageModel {Title = options.Title ?? string.Empty, Tags = options.Tags?.ToArray()};
+                var model = new HeroImageModel
+                {
+                    Title = options.Title ?? string.Empty, 
+                    Tags = options.Tags?.ToArray(),
+                    OutputHtml = options.OutputDebugHtml
+                };
 
                 await generator.GenerateImageAsync(outputFile, model);
                 logger.Information("Successfully generated image {File}", options.OutputFileName);

@@ -16,5 +16,9 @@ namespace BlogToHtml.Commands.GenerateHeroImage
 
         [Option('g', "tags", Required = false, HelpText = "Optional list of tags")]
         public IEnumerable<string>? Tags { get; set; }
+
+        [Option('d', "debug", Required = false,
+            HelpText = "Generate intermediatory HTML output for debugging. Defaults to False.")]
+        public bool OutputDebugHtml { get; set; } = false;
     }
 }
