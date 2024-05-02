@@ -7,9 +7,11 @@
     using Serilog.Events;
     using System.IO.Abstractions;
     using Commands.GenerateHeroImage;
+    using System;
 
     static class Program
     {
+        [STAThread]
         static async Task Main(string[] args)
         {
             var loggerConfiguration = new LoggerConfiguration()

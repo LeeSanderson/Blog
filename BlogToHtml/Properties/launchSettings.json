@@ -2,7 +2,8 @@
   "profiles": {
     "BlogToHtml": {
       "commandName": "Project",
-      "commandLineArgs": " -c C:\\PKM\\Output\\SixSidedDiceBlog -o C:\\Dev\\Personal\\Blog\\Output -x True"
+      // "commandLineArgs": " -c C:\\PKM\\Output\\SixSidedDiceBlog -o C:\\Dev\\Personal\\leesanderson.github.io\\Blog -x True"
+      "commandLineArgs": " hero -o C:\\Dev\\Personal\\leesanderson.github.io\\index.png -t Six Sided Dice"
     }
   }
 }
