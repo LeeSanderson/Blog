@@ -1,13 +1,11 @@
-﻿using System;
-using System.Text;
-using Markdig.Helpers;
-using Markdig.Parsers;
-using Markdig.Renderers;
-using Markdig.Renderers.Html;
-using Markdig.Syntax;
-
-namespace BlogToHtml.MarkdigExtensions.Prism
+﻿namespace BlogToHtml.MarkdigExtensions.Prism
 {
+    using System.Text;
+    using Markdig.Parsers;
+    using Markdig.Renderers;
+    using Markdig.Renderers.Html;
+    using Markdig.Syntax;
+
     internal class PrismCodeBlockRenderer : HtmlObjectRenderer<CodeBlock>
     {
         private readonly CodeBlockRenderer codeBlockRenderer;

@@ -8,7 +8,7 @@
     using YamlDotNet.Serialization.Converters;
     using YamlDotNet.Serialization.NamingConventions;
 
-    public class FrontMatterProcessor
+    internal class FrontMatterProcessor
     {
         private const string YamlDateFormat = "yyyy-MM-dd HH:mm:ss";
         private readonly IDeserializer yamlDeserialiser;

@@ -10,8 +10,8 @@
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
     using Markdig.Renderers.Html;
-    
-    public class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
+
+    internal class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
     {
         private readonly ArticleTemplate articleTemplate;
         private readonly MarkdownPipeline pipeline;

@@ -4,7 +4,7 @@ namespace BlogToHtml.Generators
 {
     using System.Threading.Tasks;
 
-    public interface IContentGenerator
+    internal interface IContentGenerator
     {
         Task GenerateContentAsync(IFileInfo sourceFileInfo);
     }

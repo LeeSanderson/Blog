@@ -3,7 +3,7 @@ using System.IO.Abstractions;
 
 namespace BlogToHtml.Generators
 {
-    public class GeneratorBase
+    internal class GeneratorBase
     {
         protected readonly GeneratorContext GeneratorContext;
 

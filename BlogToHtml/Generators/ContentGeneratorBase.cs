@@ -3,7 +3,7 @@
     using System.IO.Abstractions;
     using System.Threading.Tasks;
 
-    public abstract class ContentGeneratorBase : GeneratorBase, IContentGenerator
+    internal abstract class ContentGeneratorBase : GeneratorBase, IContentGenerator
     {
         protected ContentGeneratorBase(GeneratorContext generatorContext) : base(generatorContext)
         {

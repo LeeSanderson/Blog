@@ -3,7 +3,7 @@ using Markdig;
 
 namespace BlogToHtml.Generators
 {
-    public static class MarkdownPipelineFactory
+    internal static class MarkdownPipelineFactory
     {
         public static MarkdownPipeline GetStandardPipeline() =>
             new MarkdownPipelineBuilder()

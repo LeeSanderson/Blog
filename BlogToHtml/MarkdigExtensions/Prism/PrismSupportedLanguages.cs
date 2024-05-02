@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace BlogToHtml.MarkdigExtensions.Prism
+﻿namespace BlogToHtml.MarkdigExtensions.Prism
 {
+    using System.Collections.Generic;
+
     internal static class PrismSupportedLanguages
     {
         private static readonly HashSet<string> SupportedLanguages = new(new[] {

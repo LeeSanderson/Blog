@@ -2,7 +2,6 @@
 
 namespace BlogToHtml.Generators
 {
-    using System.IO;
     using System.Threading.Tasks;
 
     internal class CopyContentGenerator : ContentGeneratorBase, IContentGenerator

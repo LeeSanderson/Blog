@@ -5,11 +5,11 @@
 
     internal abstract class SummaryContentGeneratorBase : ISummaryContentGenerator
     {
-        protected readonly GeneratorContext generatorContext;
+        protected readonly GeneratorContext GeneratorContext;
 
         protected SummaryContentGeneratorBase(GeneratorContext generatorContext)
         {
-            this.generatorContext = generatorContext;
+            GeneratorContext = generatorContext;
         }
 
         public abstract Task GenerateSummaryContentAsync();

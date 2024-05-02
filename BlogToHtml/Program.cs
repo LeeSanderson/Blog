@@ -1,13 +1,12 @@
-﻿using System.IO.Abstractions;
-using BlogToHtml.Commands.GenerateHeroImage;
-
-namespace BlogToHtml
+﻿namespace BlogToHtml
 {
     using System.Threading.Tasks;
     using Commands.BuildBlog;
     using CommandLine;
     using Serilog;
     using Serilog.Events;
+    using System.IO.Abstractions;
+    using Commands.GenerateHeroImage;
 
     static class Program
     {

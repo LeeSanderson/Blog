@@ -3,7 +3,7 @@ using RazorEngine.Templating;
 
 namespace BlogToHtml
 {
-    public static class RazorEngineFactory
+    internal static class RazorEngineFactory
     {
         public static IRazorEngineService CreateRazorEngineService()
         {

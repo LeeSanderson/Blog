@@ -7,7 +7,7 @@ namespace BlogToHtml
     using System.IO;
     using System.Threading.Tasks;
 
-    public static class DirectoryInfoExtensions
+    internal static class DirectoryInfoExtensions
     {
         public static IDirectoryInfo ToDirectoryInfo(this IFileSystem fileSystem, string? path, bool createIfNotExists = false)
         {

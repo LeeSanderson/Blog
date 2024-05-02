@@ -5,7 +5,7 @@
     using WkHtmlConverter;
     using Models;
 
-    public class HeroImageGenerator : GeneratorBase
+    internal class HeroImageGenerator : GeneratorBase
     {
         private readonly HeroImagesTemplate heroImagesTemplate;
         private readonly HtmlToImageConverter htmlToImageConverter;

@@ -10,7 +10,7 @@
     using System.IO.Abstractions;
     using BlogToHtml;
 
-    public class BuildBlogCommandHandler
+    internal class BuildBlogCommandHandler
     {
         private readonly ILogger logger;
         private readonly IFileSystem fileSystem;

@@ -34,8 +34,8 @@
             string outputFileName,
             List<SummaryModel> pageSummaries)
         {
-            var pageFileInfo = generatorContext.FileSystem.FileInfo.New(Path.Combine(generatorContext.OutputDirectory.FullName, outputFileName));
-            var templateContext = new TemplateContext(generatorContext.OutputDirectory, pageFileInfo);
+            var pageFileInfo = GeneratorContext.FileSystem.FileInfo.New(Path.Combine(GeneratorContext.OutputDirectory.FullName, outputFileName));
+            var templateContext = new TemplateContext(GeneratorContext.OutputDirectory, pageFileInfo);
             await template.GenerateAndSaveAsync(
                 pageSummaries,
                 templateContext,

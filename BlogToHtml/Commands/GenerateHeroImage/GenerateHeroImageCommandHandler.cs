@@ -6,7 +6,7 @@ namespace BlogToHtml.Commands.GenerateHeroImage
     using Serilog;
     using System.IO.Abstractions;
 
-    public class GenerateHeroImageCommandHandler
+    internal class GenerateHeroImageCommandHandler
     {
         private readonly ILogger logger;
         private readonly IFileSystem fileSystem;

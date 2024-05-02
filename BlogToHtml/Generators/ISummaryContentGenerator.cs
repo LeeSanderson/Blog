@@ -3,7 +3,7 @@
     using BlogToHtml.Models;
     using System.Threading.Tasks;
 
-    public interface ISummaryContentGenerator
+    internal interface ISummaryContentGenerator
     {
         void OnArticleGenerated(ArticleModel model);
 
