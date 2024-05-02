@@ -24,6 +24,12 @@
 
             var imageConversionSettings = new ImageConversionSettings { Format = ImageOutputFormat.Png };
             var html = heroImagesTemplate.Generate(model, templateContext);
+            if (model.OutputHtml)
+            {
+                var htmlOutputFileInfo = GetOutputFileInfo(sourceFileInfo, "png.html");
+                await GeneratorContext.FileSystem.File.WriteAllTextAsync(htmlOutputFileInfo.FullName, html);
+            }
+
             var result = await htmlToImageConverter.ConvertAsync(imageConversionSettings, html);
 
             await GeneratorContext.FileSystem.File.WriteAllBytesAsync(outputFileInfo.FullName, result);

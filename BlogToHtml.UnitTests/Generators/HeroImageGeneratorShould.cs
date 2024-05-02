@@ -24,6 +24,24 @@ namespace BlogToHtml.UnitTests.Generators
             IsValidPngImage(image).Should().BeTrue();
         }
 
+        [Fact]
+        public async Task GenerateHtmlOutputWhenEnabled()
+        {
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { @"c:\Content\Test1.md", "Generator does not use source file content. Model is used instead" }
+            });
+            var generator = CreateHeroImageGenerator(fileSystem);
+            var model = new HeroImageModel {Title = "A test image", Tags = new[] {"Tag1", "Tag2"}, OutputHtml = true};
+            var outputImageFileName = fileSystem.FileInfo.New(@"c:\Content\Test1.png");
+            
+            await generator.GenerateImageAsync(outputImageFileName, model);
+            var htmlDebugOutput = fileSystem.FileInfo.New(@"c:\Output\Test1.png.html");
+
+            htmlDebugOutput.Exists.Should().BeTrue();
+        }
+
+
         private static HeroImageGenerator CreateHeroImageGenerator(MockFileSystem fileSystem)
         {
             var contentDirectory = fileSystem.DirectoryInfo.New(@"c:\Content\");

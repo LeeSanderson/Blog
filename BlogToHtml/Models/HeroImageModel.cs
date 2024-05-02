@@ -8,5 +8,6 @@ namespace BlogToHtml.Models
         public string Title { get; set; } = "Untitled Blog post";
         public string[]? Tags { get; set; }
         public IEnumerable<string> GetTags() => Tags ?? Enumerable.Empty<string>();
+        public bool OutputHtml { get; set; }
     }
 }
