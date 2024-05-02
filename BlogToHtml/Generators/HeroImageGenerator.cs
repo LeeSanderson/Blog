@@ -1,19 +1,23 @@
-﻿namespace BlogToHtml.Generators
+﻿using System.Linq;
+using PuppeteerSharp.BrowserData;
+
+namespace BlogToHtml.Generators
 {
     using System.IO.Abstractions;
     using System.Threading.Tasks;
-    using WkHtmlConverter;
     using Models;
+    using System.Threading;
+    using PuppeteerSharp;
 
     internal class HeroImageGenerator : GeneratorBase
     {
+        private static readonly SemaphoreSlim BrowserFetcherSemaphore = new(1, 1);
+
         private readonly HeroImagesTemplate heroImagesTemplate;
-        private readonly HtmlToImageConverter htmlToImageConverter;
 
         public HeroImageGenerator(GeneratorContext generatorContext) : base(generatorContext)
         {
             heroImagesTemplate = new HeroImagesTemplate(generatorContext.RazorEngineService);
-            htmlToImageConverter = new HtmlToImageConverter();
         }
 
         public async Task GenerateImageAsync(IFileInfo sourceFileInfo, HeroImageModel model)
@@ -22,7 +26,6 @@
             EnsureOutputPathExists(outputFileInfo);
             var templateContext = new TemplateContext(GeneratorContext.OutputDirectory, outputFileInfo);
 
-            var imageConversionSettings = new ImageConversionSettings { Format = ImageOutputFormat.Png };
             var html = heroImagesTemplate.Generate(model, templateContext);
             if (model.OutputHtml)
             {
@@ -30,9 +33,52 @@
                 await GeneratorContext.FileSystem.File.WriteAllTextAsync(htmlOutputFileInfo.FullName, html);
             }
 
-            var result = await htmlToImageConverter.ConvertAsync(imageConversionSettings, html);
-
+            // var result = await ConvertHtmlToImage(html);
+            var result = await ConvertHtmlToImageWithPuppeteer(html);
             await GeneratorContext.FileSystem.File.WriteAllBytesAsync(outputFileInfo.FullName, result);
         }
+
+        private async Task<byte[]> ConvertHtmlToImageWithPuppeteer(string html)
+        {
+            await EnsureBrowserDownloaded();
+
+            await using var browser = await Puppeteer.LaunchAsync(new()
+            {
+                Headless = true,
+                Args = new[] {"--no-sandbox", "--disable-setuid-sandbox"},
+                DefaultViewport = new ViewPortOptions { Width = 800, Height = 100 }
+            });
+
+            var page = await browser.NewPageAsync();
+            await page.SetContentAsync(html);
+            await Task.Delay(1000); // Wait for content to load?
+
+            var options = new ScreenshotOptions { FullPage  = true, CaptureBeyondViewport = true };
+            return await page.ScreenshotDataAsync(options);
+        }
+
+        private static async Task EnsureBrowserDownloaded()
+        {
+            // We need to fetch it
+            await BrowserFetcherSemaphore.WaitAsync();
+            try
+            {
+                using var browserFetcher = new BrowserFetcher();
+                var installedBrowser = 
+                    browserFetcher
+                        .GetInstalledBrowsers()
+                        .FirstOrDefault(b => b.Browser == browserFetcher.Browser && b.BuildId == Chrome.DefaultBuildId);
+
+                if (installedBrowser == null)
+                {
+                    await browserFetcher.DownloadAsync();
+                }
+            }
+            finally
+            {
+                BrowserFetcherSemaphore.Release();
+            }
+        }
+
     }
 }

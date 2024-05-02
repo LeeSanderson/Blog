@@ -32,7 +32,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
 
             var builder = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
+                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, formats: YamlDateFormat));
 
             yamlSerializer = builder.Build();
         }
@@ -103,8 +103,8 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
 
     internal sealed class BlogOutput : IDisposable
     {
-        public List<IFileInfo> InputFiles { get; } = new List<IFileInfo>();
-        public List<IFileInfo> GeneratedFiles { get; } = new List<IFileInfo>();
+        public List<IFileInfo> InputFiles { get; } = new();
+        public List<IFileInfo> GeneratedFiles { get; } = new();
 
         public void Dispose()
         {

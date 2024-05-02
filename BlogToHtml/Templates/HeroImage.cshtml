@@ -9,12 +9,28 @@
     <link rel="stylesheet" href="https://www.sixsideddice.com/css//bootstrapdarkly.min.css">
     <link rel="stylesheet" href="https://www.sixsideddice.com/css/site.css">
     <script src="https://kit.fontawesome.com/d22effaf67.js" crossorigin="anonymous"></script>
+    <style>
+        .article-tags {
+            float:right;
+            padding-right:1rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
         <main role="main" class="pb-3">
             <h1>@Model.Title</h1>
-            <i id="hashDie" class="fas fa-3x fa-dice-one" aria-hidden="true"></i>
+            <i id="hashDie1" class="pr-2 fas fa-4x" aria-hidden="true"></i>
+            <i id="hashDie2" class="pr-2 fas fa-4x" aria-hidden="true"></i>
+            <i id="hashDie3" class="pr-2 fas fa-4x" aria-hidden="true"></i>
+            <div>
+                <span class="article-tags">
+                    @foreach (var tag in Model.GetTags())
+                    {
+                        <span class="badge badge-info">@tag</span>
+                    }
+                </span>
+            </div>
         </main>
     </div>
 
@@ -24,19 +40,21 @@
     <script>
         $(function () {
 
-            const hashCode = function (s) => {
+            const hashCode = function (s, shift) {
                 var hash = 0, i, chr;
                 if (s.length === 0) return hash;
                 for (i = 0; i < s.length; i++) {
                     chr = s.charCodeAt(i);
-                    hash = ((hash << 5) - hash) + chr;
+                    hash = ((hash << shift) - hash) + chr;
                     hash |= 0; // Convert to 32bit integer
                 }
                 return hash;
             }
             const title = "@Model.Title";
             const dice = ["one", "two", "three", "four", "five", "six"];
-            $("#hashDie").addClass("fas fa-dice-" + dice[Math.abs(hashCode(title) % dice.length)]);
+            $("#hashDie1").addClass("fas fa-dice-" + dice[Math.abs(hashCode(title, 5) % dice.length)]);
+            $("#hashDie2").addClass("fas fa-dice-" + dice[Math.abs(hashCode(title, 7) % dice.length)]);
+            $("#hashDie3").addClass("fas fa-dice-" + dice[Math.abs(hashCode(title, 11) % dice.length)]);
         });
     </script>
 </body>
