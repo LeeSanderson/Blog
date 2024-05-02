@@ -34,7 +34,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
 
-            this.yamlSerializer = builder.Build();
+            yamlSerializer = builder.Build();
         }
 
         public BlogBuilder AddContent(

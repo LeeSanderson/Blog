@@ -28,6 +28,35 @@ namespace BlogToHtml
             return result;
         }
 
+        public static IFileInfo ToFileInfo(this IFileSystem fileSystem, string? path, bool errorIfNotExists = true)
+        {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
+            var result = fileSystem.FileInfo.New(path);
+            if (errorIfNotExists && !result.Exists)
+            {
+                throw new Exception($"File {path} does not exist");
+            }
+
+            return result;
+        }
+
+        public static IDirectoryInfo CreateIfNotExists(this IDirectoryInfo directoryInfo)
+        {
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+                directoryInfo.Refresh();
+            }
+
+            if (!directoryInfo.Exists)
+            {
+                throw new Exception($"Directory {directoryInfo.FullName} does not exist");
+            }
+
+            return directoryInfo;
+        }
+
         private static async Task RecurseAsync(this IDirectoryInfo directoryInfo, Func<IFileInfo, Task> onFile, Func<IDirectoryInfo, Task>? onDirectory = null)
         {
             foreach (var fileInfo in directoryInfo.EnumerateFiles())
