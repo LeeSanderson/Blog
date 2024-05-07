@@ -38,3 +38,7 @@ h1, h2 {
 li {
     margin-bottom: 1rem;
 }
+
+li.nav-item {
+    margin-bottom: 0;
+}
