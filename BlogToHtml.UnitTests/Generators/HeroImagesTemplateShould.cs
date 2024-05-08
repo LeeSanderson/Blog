@@ -21,7 +21,7 @@ namespace BlogToHtml.UnitTests.Generators
 
             var html = template.Generate(new HeroImageModel { Title = TheExpectedTitle }, templateContext);
 
-            html.Should().Contain($"<h1>{TheExpectedTitle}</h1>");
+            html.Should().Contain($"<h1 class=\"main-title\">{TheExpectedTitle}</h1>");
         }
     }
 }
