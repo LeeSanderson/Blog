@@ -1,4 +1,4 @@
-﻿using BlogToHtml.MarkdigExtensions.Prism;
+﻿using BlogToHtml.MarkdigExtensions;
 using Markdig;
 
 namespace BlogToHtml.Generators
@@ -11,7 +11,7 @@ namespace BlogToHtml.Generators
                 .UseYamlFrontMatter()
                 .UseAdvancedExtensions()
                 .UsePrism()
+                .UseHeroHeadings()
                 .Build();
-
     }
 }

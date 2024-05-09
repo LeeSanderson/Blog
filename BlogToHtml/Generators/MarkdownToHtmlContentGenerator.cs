@@ -1,4 +1,6 @@
-﻿namespace BlogToHtml.Generators
+﻿using BlogToHtml.MarkdigExtensions;
+
+namespace BlogToHtml.Generators
 {
     using System;
     using System.IO.Abstractions;
@@ -53,8 +55,9 @@
 
         private ArticleModel ConvertMarkdownToModel(IFileInfo sourceFileInfo, string markdownSource)
         {
+            MarkdownContext.Current.CurrentSourceFile = sourceFileInfo;
             var document = MarkdownParser.Parse(markdownSource, pipeline);
-            ReplaceFirstHeadingWithHeroImage(sourceFileInfo, document);
+            MarkFirstHeadingWithHeroImage(document);
             RewriteInternalLinks(sourceFileInfo, document);
             return CreateArticleModel(document);
         }
@@ -66,9 +69,8 @@
             return model;
         }
 
-        private void ReplaceFirstHeadingWithHeroImage(IFileInfo sourceFileInfo, MarkdownDocument document)
+        private void MarkFirstHeadingWithHeroImage(MarkdownDocument document)
         {
-
             foreach (var descendant in document.Descendants())
             {
                 switch (descendant)
