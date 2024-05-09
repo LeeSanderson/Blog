@@ -57,7 +57,7 @@ namespace BlogToHtml.Generators
         {
             MarkdownContext.Current.CurrentSourceFile = sourceFileInfo;
             var document = MarkdownParser.Parse(markdownSource, pipeline);
-            MarkFirstHeadingWithHeroImage(document);
+            MarkFirstHeadingAsHeroImage(document);
             RewriteInternalLinks(sourceFileInfo, document);
             return CreateArticleModel(document);
         }
@@ -69,7 +69,7 @@ namespace BlogToHtml.Generators
             return model;
         }
 
-        private void MarkFirstHeadingWithHeroImage(MarkdownDocument document)
+        private void MarkFirstHeadingAsHeroImage(MarkdownDocument document)
         {
             foreach (var descendant in document.Descendants())
             {
