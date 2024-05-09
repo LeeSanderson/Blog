@@ -18,6 +18,7 @@ namespace BlogToHtml.Generators
         private readonly ArticleTemplate articleTemplate;
         private readonly MarkdownPipeline pipeline;
         private readonly FrontMatterProcessor frontMatterProcessor;
+        private readonly HeroImageGenerator heroImageGenerator;
 
         public event EventHandler<ArticleModel>? ArticleGenerated;
 
@@ -26,6 +27,7 @@ namespace BlogToHtml.Generators
             articleTemplate = new ArticleTemplate(generatorContext.RazorEngineService);
             pipeline = MarkdownPipelineFactory.GetStandardPipeline();
             frontMatterProcessor = new FrontMatterProcessor();
+            heroImageGenerator = new HeroImageGenerator(generatorContext);
         }
 
         public override async Task GenerateContentAsync(IFileInfo sourceFileInfo)
@@ -48,6 +50,9 @@ namespace BlogToHtml.Generators
 
                 var templateContext = new TemplateContext(GeneratorContext.OutputDirectory, outputFileInfo);
                 await articleTemplate.GenerateAndSaveAsync(articleModel, templateContext, outputFileInfo);
+
+                var heroImageModel = new HeroImageModel {Title = articleModel.Title, Tags = articleModel.Tags};
+                await heroImageGenerator.GenerateImageAsync(sourceFileInfo, heroImageModel);
 
                 ArticleGenerated?.Invoke(this, articleModel);
             }

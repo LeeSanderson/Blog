@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using FluentAssertions;
 
 namespace BlogToHtml.UnitTests.Commands.BuildBlog
 {
@@ -22,6 +23,17 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             var generatedHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "Example.html");
             await Verifier.VerifyFile(generatedHtmlFile.FullName);
         }
+
+        [Fact]
+        public async Task Generate_expected_hero_image()
+        {
+            using var blogOutput =
+                await new BlogBuilder(new FileSystem())
+                    .AddContent("Example.md", "# Heading 1")
+                    .GenerateAsync();
+            blogOutput.GeneratedFiles.First(f => f.Name == "Example.png").Should().NotBeNull();
+        }
+
 
         [Fact]
         public async Task Generate_index_page_with_most_recent_10_blog_articles()
