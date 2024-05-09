@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading.Tasks;
 using BlogToHtml.Generators;
@@ -12,11 +13,22 @@ namespace BlogToHtml.UnitTests.Generators
         [Fact]
         public async Task GenerateExpectedHtml()
         {
-            var outputFile = await GenerateFile("# This is a H1");
+            var outputFile = await GenerateFile("## This is a H2");
             outputFile
                 .TextContents
                 .Should()
-                .Contain(@"<h1 id=""this-is-a-h1"">This is a H1</h1>");
+                .Contain(@"<h2 id=""this-is-a-h2"">This is a H2</h2>");
+        }
+
+        [Fact]
+        public async Task MarkFirstLevel1HeadingAsHeroHeading()
+        {
+            var outputFile = await GenerateFile("# This is a H1" + Environment.NewLine + "# This is another H1");
+            outputFile
+                .TextContents
+                .Should()
+                .Contain(@"<h1 id=""this-is-a-h1"" class=""sr-only"" data-hero-heading=""true"">This is a H1</h1>")
+                .And.Contain(@"<h1 id=""this-is-another-h1"">This is another H1</h1>");
         }
 
         [Fact]

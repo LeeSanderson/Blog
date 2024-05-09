@@ -54,6 +54,7 @@
         private ArticleModel ConvertMarkdownToModel(IFileInfo sourceFileInfo, string markdownSource)
         {
             var document = MarkdownParser.Parse(markdownSource, pipeline);
+            ReplaceFirstHeadingWithHeroImage(sourceFileInfo, document);
             RewriteInternalLinks(sourceFileInfo, document);
             return CreateArticleModel(document);
         }
@@ -63,6 +64,21 @@
             var model = frontMatterProcessor.GetFrontMatter<ArticleModel>(document);
             model.Content = document.ToHtml(pipeline);
             return model;
+        }
+
+        private void ReplaceFirstHeadingWithHeroImage(IFileInfo sourceFileInfo, MarkdownDocument document)
+        {
+
+            foreach (var descendant in document.Descendants())
+            {
+                switch (descendant)
+                {
+                    case HeadingBlock { Level: 1 } heading:
+                        heading.GetAttributes().AddPropertyIfNotExist("class", "sr-only");
+                        heading.GetAttributes().AddPropertyIfNotExist("data-hero-heading", "true");
+                        return; // Only applie change to first heading
+                }
+            }
         }
 
         private void RewriteInternalLinks(IFileInfo sourceFileInfo, MarkdownObject document)

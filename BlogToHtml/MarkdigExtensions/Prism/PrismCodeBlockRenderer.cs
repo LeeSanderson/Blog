@@ -32,7 +32,7 @@
 
             var htmlAttributes = new HtmlAttributes();
             htmlAttributes.AddClass("language-" + language);
-            string sourceCode = ExtractSourceCode((LeafBlock) node);
+            string sourceCode = ExtractSourceCode(node);
             renderer
                 .Write("<pre>")
                     .Write("<code")
