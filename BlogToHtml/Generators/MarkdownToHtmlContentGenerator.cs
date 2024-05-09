@@ -78,7 +78,7 @@ namespace BlogToHtml.Generators
                     case HeadingBlock { Level: 1 } heading:
                         heading.GetAttributes().AddPropertyIfNotExist("class", "sr-only");
                         heading.GetAttributes().AddPropertyIfNotExist("data-hero-heading", "true");
-                        return; // Only applie change to first heading
+                        return; // Only apply change to first heading
                 }
             }
         }
