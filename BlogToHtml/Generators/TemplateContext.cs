@@ -34,9 +34,8 @@ namespace BlogToHtml.Generators
         // [Used in templates]
         public string RelativeUrlTo(SummaryModel model)
         {
-            var outputPath = OutputFile!.Directory!.FullName;
-            var relativePath = model.OutputFileInfo!.FullName.Replace(outputPath, "./");
-            return relativePath.Replace('\\', '/');
+            var currentDirectory = OutputFile!.Directory!;
+            return model.OutputFileInfo!.RelativeUrlTo(currentDirectory);
         }
     }
 }
