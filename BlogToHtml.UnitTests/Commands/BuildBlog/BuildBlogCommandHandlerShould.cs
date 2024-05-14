@@ -18,7 +18,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             using var blogOutput = 
                 await new BlogBuilder(new FileSystem())
                     .AddContent("Example.md", "# Heading 1")
-                    .GenerateAsync();
+                    .GenerateAsync(false);
 
             var generatedHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "Example.html");
             await Verifier.VerifyFile(generatedHtmlFile.FullName);
@@ -30,7 +30,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             using var blogOutput =
                 await new BlogBuilder(new FileSystem())
                     .AddContent("Example.md", "# Heading 1")
-                    .GenerateAsync();
+                    .GenerateAsync(true);
             blogOutput.GeneratedFiles.First(f => f.Name == "Example.png").Should().NotBeNull();
         }
 
@@ -51,7 +51,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
                 .AddContent("Example9.md", "# Heading 9", publicationDate: new DateTime(2022, 1, 9))
                 .AddContent("Example10.md", "# Heading 10", publicationDate: new DateTime(2022, 1, 10))
                 .AddContent("Example11.md", "# Heading 11", publicationDate: new DateTime(2022, 1, 11))
-                .GenerateAsync();
+                .GenerateAsync(false);
 
             var generatedIndexHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "index.html");
             await Verifier.VerifyFile(generatedIndexHtmlFile.FullName);
@@ -64,7 +64,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
                 await new BlogBuilder(new FileSystem())
                     .AddContent("Example1.md", "# Heading 1", publicationDate: new DateTime(2022, 1, 1))
                     .AddContent("Example2.md", "# Heading 2", publicationDate: new DateTime(2022, 1, 2), publicationStatus: PublicationStatus.Draft)
-                    .GenerateAsync();
+                    .GenerateAsync(false);
 
             var generatedIndexHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "index.html");
             await Verifier.VerifyFile(generatedIndexHtmlFile.FullName);
@@ -86,7 +86,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
                 .AddContent("Example9.md", "# Heading 9", publicationDate: new DateTime(2022, 1, 9))
                 .AddContent("Example10.md", "# Heading 10", publicationDate: new DateTime(2022, 1, 10))
                 .AddContent("Example11.md", "# Heading 11", publicationDate: new DateTime(2022, 1, 11))
-                .GenerateAsync();
+                .GenerateAsync(false);
 
             var generatedIndexHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "all.html");
             await Verifier.VerifyFile(generatedIndexHtmlFile.FullName);

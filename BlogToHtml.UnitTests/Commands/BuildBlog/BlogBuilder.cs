@@ -62,7 +62,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             return this;
         }
 
-        public async Task<BlogOutput> GenerateAsync()
+        public async Task<BlogOutput> GenerateAsync(bool generateHeroImages)
         {
             await inputDirectory.CleanAsync();
             await outputDirectory.CleanAsync();
@@ -86,7 +86,8 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
                     {
                         ContentDirectory = inputDirectory.FullName,
                         OutputDirectory = outputDirectory.FullName,
-                        Clean = true
+                        Clean = true,
+                        GenerateHeroImages = generateHeroImages
                     });
 
             var result = await buildBlogCommand.RunAsync();
