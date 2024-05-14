@@ -3,6 +3,11 @@
     ViewBag.Description = Model.Abstract;
     ViewBag.Url = ViewBag.TemplateContext.Url;
     ViewBag.HeroImageUrl = ViewBag.TemplateContext.HeroImageUrl;
+    ViewBag.Keywords = string.Join(" ", Model.GetTags());
+    if (string.IsNullOrEmpty(ViewBag.Keywords))
+    {
+        ViewBag.Keywords = "software craftsmanship dotnet azure blog";
+    }
 
     Layout = "_Layout";
 }

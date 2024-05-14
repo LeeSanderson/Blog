@@ -17,7 +17,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
         {
             using var blogOutput = 
                 await new BlogBuilder(new FileSystem())
-                    .AddContent("Example.md", "# Heading 1")
+                    .AddContent("Example.md", "# Heading 1", tags: new []{ "test", "with", "tags"})
                     .GenerateAsync(false);
 
             var generatedHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "Example.html");

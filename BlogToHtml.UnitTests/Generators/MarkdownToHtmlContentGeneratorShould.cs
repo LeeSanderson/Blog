@@ -176,6 +176,7 @@ namespace BlogToHtml.UnitTests.Generators
             var generatorContext = new GeneratorContext(RazorEngineFactory.CreateRazorEngineService(), fileSystem,
                 contentDirectory, outputDirectory);
             var generator = new MarkdownToHtmlContentGenerator(generatorContext);
+            generator.GenerateHeroImages = false;
             return generator;
         }
 
