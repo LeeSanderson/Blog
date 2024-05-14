@@ -2,7 +2,8 @@
   "profiles": {
     "BlogToHtml": {
       "commandName": "Project",
-      "commandLineArgs": " -c C:\\PKM\\Output\\SixSidedDiceBlog -o C:\\Dev\\Personal\\leesanderson.github.io\\Blog -x True"
+      // "commandLineArgs": " -c C:\\PKM\\Output\\SixSidedDiceBlog -o C:\\Dev\\Personal\\leesanderson.github.io\\Blog -x True"
+      "commandLineArgs": " -c C:\\PKM\\Output\\SixSidedDiceBlog -o C:\\Dev\\Personal\\leesanderson.github.io\\Blog -x True -i False"
       // "commandLineArgs": " hero -o C:\\Dev\\Personal\\leesanderson.github.io\\index.png -t \"Six Sided Dice\""
       // "commandLineArgs": " hero -o C:\\Dev\\Personal\\leesanderson.github.io\\index.png -d True -t \"Six Sided Dice Blog Post with a very long title that could span over two or even three lines\" -g test1 test2 test3"
     }

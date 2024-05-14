@@ -1,6 +1,8 @@
-﻿using BlogToHtml.Models;
+﻿using System.IO;
+using BlogToHtml.Models;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Reflection;
 
 namespace BlogToHtml.Generators
 {
@@ -29,6 +31,14 @@ namespace BlogToHtml.Generators
             Root = root;
             OutputFile = outputFile;
         }
+
+        // ReSharper disable once UnusedMember.Global
+        // [Used in templates]
+        public string Url => OutputFile.GetFullUrl(Root);
+
+        // ReSharper disable once UnusedMember.Global
+        // [Used in templates]
+        public string HeroImageUrl => Path.ChangeExtension(OutputFile.GetFullUrl(Root), ".png");
 
         // ReSharper disable once UnusedMember.Global
         // [Used in templates]

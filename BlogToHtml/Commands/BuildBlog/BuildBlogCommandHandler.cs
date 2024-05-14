@@ -77,7 +77,11 @@
         private void RegisterContentGenerators(GeneratorContext generatorContext)
         {
             contentGeneratorsByFileExtension.Clear();
-            var markdownToHtmlContentGenerator = new MarkdownToHtmlContentGenerator(generatorContext);
+            var markdownToHtmlContentGenerator = 
+                new MarkdownToHtmlContentGenerator(generatorContext)
+                {
+                    GenerateHeroImages = options.GenerateHeroImages
+                };
             contentGeneratorsByFileExtension[".md"] = markdownToHtmlContentGenerator;
             markdownToHtmlContentGenerator.ArticleGenerated += MarkdownToHtmlContentGeneratorArticleGenerated;
 

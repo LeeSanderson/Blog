@@ -1,7 +1,10 @@
 ﻿@{
     ViewBag.Title = "All Blog Articles";
-    Layout = "_Layout";
+    ViewBag.Description = "All blog articles by Lee Sanderson"
+    ViewBag.Url = ViewBag.TemplateContext.Url;
+    ViewBag.HeroImageUrl = (string)null;
 
+    Layout = "_Layout";
 }
 
 <h1>All Blog Posts</h1>

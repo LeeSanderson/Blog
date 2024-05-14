@@ -15,5 +15,9 @@
         [Option('x', "clean", Required = false, 
             HelpText = "Flag indicating if the output directory should be cleaned before content is generated. Defaults to True.")]
         public bool Clean { get; set; } = true;
+
+        [Option('i', "images", Required = false,
+            HelpText = "Flag indicating if hero images should be generated. Defaults to True.")]
+        public bool GenerateHeroImages { get; set; } = true;
     }
 }

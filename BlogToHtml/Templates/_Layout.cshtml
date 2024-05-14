@@ -18,6 +18,34 @@
     <script type="module" src="https://www.sixsideddice.com/js/header.js"></script>
     <script type="module" src="https://www.sixsideddice.com/js/footer.js"></script>
     @RenderSection("Styles", required: false)
+    
+    <!-- Meta -->
+    <meta name="description" content="@ViewBag.Description">
+    <meta name="author" content="Lee Sanderson">
+    <meta name="copyright" content="Lee Sanderson">
+    <meta name="keywords" content="software craftsmanship dotnet azure blog">
+    <link rel="me" type="text/html" href="https://twitter.com/SixSidedDev">
+    <link rel="me" type="text/html" href="https://github.com/LeeSanderson">
+    <link rel="me" type="text/html" href="https://www.linkedin.com/in/lee-sanderson">
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@@SixSidedDev">
+    <meta name="twitter:creator" content="@@SixSidedDev">
+    <meta name="twitter:title" content="@ViewBag.Title">
+    <meta name="twitter:description" content="@ViewBag.Description">
+@if (!string.IsNullOrEmpty(ViewBag.HeroImageUrl)) 
+{
+    <meta name="twitter:image" content="@ViewBag.HeroImageUrl">
+}
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta name="title" property="og:title" content="@ViewBag.Title">
+    <meta name="description" property="og:description" content="@ViewBag.Description">
+@if (!string.IsNullOrEmpty(ViewBag.HeroImageUrl)) 
+{
+    <meta name="image" property="og:image" content="@ViewBag.HeroImageUrl">
+}
+    <meta property="og:url" content="@ViewBag.Url">
 </head>
 <body>
     <six-sided-header></six-sided-header>

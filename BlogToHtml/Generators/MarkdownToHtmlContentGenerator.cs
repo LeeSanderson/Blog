@@ -21,6 +21,7 @@ namespace BlogToHtml.Generators
         private readonly HeroImageGenerator heroImageGenerator;
 
         public event EventHandler<ArticleModel>? ArticleGenerated;
+        public bool GenerateHeroImages { get; set; } = true;
 
         public MarkdownToHtmlContentGenerator(GeneratorContext generatorContext) : base(generatorContext)
         {
@@ -51,8 +52,11 @@ namespace BlogToHtml.Generators
                 var templateContext = new TemplateContext(GeneratorContext.OutputDirectory, outputFileInfo);
                 await articleTemplate.GenerateAndSaveAsync(articleModel, templateContext, outputFileInfo);
 
-                var heroImageModel = new HeroImageModel {Title = articleModel.Title, Tags = articleModel.Tags};
-                await heroImageGenerator.GenerateImageAsync(sourceFileInfo, heroImageModel);
+                if (GenerateHeroImages)
+                {
+                    var heroImageModel = new HeroImageModel {Title = articleModel.Title, Tags = articleModel.Tags};
+                    await heroImageGenerator.GenerateImageAsync(sourceFileInfo, heroImageModel);
+                }
 
                 ArticleGenerated?.Invoke(this, articleModel);
             }

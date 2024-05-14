@@ -1,7 +1,10 @@
 ﻿@{
     ViewBag.Title = "Latest Blog Articles";
-    Layout = "_Layout";
+    ViewBag.Description = "Latest blog articles by Lee Sanderson"
+    ViewBag.Url = ViewBag.TemplateContext.Url;
+    ViewBag.HeroImageUrl = (string)null;
 
+    Layout = "_Layout";
 }
 
 <h1>Latest Blog Posts</h1>

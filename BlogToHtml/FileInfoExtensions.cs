@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions;
+﻿using System;
+using System.IO.Abstractions;
 
 namespace BlogToHtml
 {
@@ -9,6 +10,12 @@ namespace BlogToHtml
             var outputPath = baseDirectory.FullName;
             var relativePath = file.FullName.Replace(outputPath, ".");
             return relativePath.Replace('\\', '/');
+        }
+
+        public static string GetFullUrl(this IFileInfo file, IDirectoryInfo rootDirectory)
+        {
+            var relativeUrl = file.RelativeUrlTo(rootDirectory)[1..];
+            return "https://www.sixsideddice.com/Blog" + relativeUrl;
         }
     }
 }

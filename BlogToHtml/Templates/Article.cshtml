@@ -1,7 +1,10 @@
 ﻿@{
     ViewBag.Title = Model.Title;
-    Layout = "_Layout";
+    ViewBag.Description = Model.Abstract;
+    ViewBag.Url = ViewBag.TemplateContext.Url;
+    ViewBag.HeroImageUrl = ViewBag.TemplateContext.HeroImageUrl;
 
+    Layout = "_Layout";
 }
 
 <div class="article-header">
