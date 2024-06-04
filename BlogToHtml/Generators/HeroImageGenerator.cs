@@ -44,7 +44,8 @@ namespace BlogToHtml.Generators
 
             await using var browser = await Puppeteer.LaunchAsync(new()
             {
-                Headless = true,
+                // Headless = true,
+                Headless = false,
                 Args = new[] {"--no-sandbox", "--disable-setuid-sandbox"},
                 DefaultViewport = new ViewPortOptions { Width = 800, Height = 100 }
             });
@@ -63,7 +64,7 @@ namespace BlogToHtml.Generators
             await BrowserFetcherSemaphore.WaitAsync();
             try
             {
-                using var browserFetcher = new BrowserFetcher();
+                var browserFetcher = new BrowserFetcher();
                 var installedBrowser = 
                     browserFetcher
                         .GetInstalledBrowsers()
