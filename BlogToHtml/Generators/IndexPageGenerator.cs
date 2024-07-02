@@ -10,7 +10,6 @@
     {
         private readonly IndexTemplate indexTemplate;
         private readonly AllTemplate allTemplate;
-        private readonly List<SummaryModel> summaries = new();
 
         public IndexPageGenerator(GeneratorContext generatorContext) : base(generatorContext)
         {
@@ -20,13 +19,8 @@
 
         public override async Task GenerateSummaryContentAsync()
         {
-            await GenerateSummaryPageAsync(indexTemplate, "index.html", summaries.OrderByDescending(s => s.PublicationDate).Take(10).ToList());
-            await GenerateSummaryPageAsync(allTemplate, "all.html", summaries.OrderByDescending(s => s.PublicationDate).ToList());
-        }
-
-        public override void OnArticleGenerated(ArticleModel model)
-        {
-            summaries.Add(model.Clone());
+            await GenerateSummaryPageAsync(indexTemplate, "index.html", Summaries.OrderByDescending(s => s.PublicationDate).Take(10).ToList());
+            await GenerateSummaryPageAsync(allTemplate, "all.html", Summaries.OrderByDescending(s => s.PublicationDate).ToList());
         }
 
         private async Task GenerateSummaryPageAsync(

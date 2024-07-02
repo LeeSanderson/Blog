@@ -72,6 +72,7 @@
         {
             summaryContentGenerators.Clear();
             summaryContentGenerators.Add(new IndexPageGenerator(generatorContext));
+            summaryContentGenerators.Add(new RssPageGenerator(generatorContext));
         }
 
         private void RegisterContentGenerators(GeneratorContext generatorContext)

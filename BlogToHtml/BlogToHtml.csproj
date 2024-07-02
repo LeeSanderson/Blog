@@ -28,6 +28,7 @@
     <PackageReference Include="Serilog" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.2" />
+    <PackageReference Include="xwebrss" Version="2.5.0" />
     <PackageReference Include="YamlDotNet" Version="15.1.6" />
   </ItemGroup>
 
