@@ -113,7 +113,8 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
             var rssFeedFile = blogOutput.GeneratedFiles.First(f => f.Name == "rss.xml");
             await Verifier
                 .VerifyFile(rssFeedFile.FullName)
-                .ScrubLinesContaining("<lastBuildDate>");
+                .ScrubLinesContaining("<lastBuildDate>")
+                .ScrubLinesContaining("<pubDate>"); // Build server run different local time, which means time offsets are different from dev.
         }
     }
 }
