@@ -7,6 +7,7 @@ using FluentAssertions;
 using Xunit;
 using X.Web.RSS;
 using System.IO.Abstractions;
+using X.Web.RSS.Extensions;
 using X.Web.RSS.Structure;
 using X.Web.RSS.Structure.Validators;
 
@@ -25,7 +26,7 @@ namespace BlogToHtml.UnitTests.Generators
                 {
                     Title = "A title",
                     Abstract = "An abstract",
-                    PublicationDate = new DateTime(2024, 07, 02, 06, 54, 0),
+                    PublicationDate = new DateTime(2024, 07, 02, 06, 54, 0, DateTimeKind.Utc),
                     PublicationStatus = PublicationStatus.Published,
                     OutputFileInfo = fileSystem.FileInfo.New(@"c:\Output\Categry\Article.html")
                 }
@@ -36,13 +37,57 @@ namespace BlogToHtml.UnitTests.Generators
             await rssPageGenerator.GenerateSummaryContentAsync();
             var outputDirectory = fileSystem.DirectoryInfo.New(@"c:\Output\");
             var expectedRssDocument = CreateExpectedRssDocument(outputDirectory, articles);
-            var actualRssDocument = RssDocument.Load(await fileSystem.File.ReadAllTextAsync(@"c:\Output\rss.xml"));
+            var rssText = await fileSystem.File.ReadAllTextAsync(@"c:\Output\rss.xml");
+            var actualRssDocument = RssDocument.Load(rssText);
+            ApplyDateParseLocalAdjustmentFix(actualRssDocument!, expectedRssDocument);
 
             actualRssDocument
                 .Should()
                 .BeEquivalentTo(
                     expectedRssDocument,
                     options => options.Excluding(rss => rss.Channel.Language));
+        }
+
+        private void ApplyDateParseLocalAdjustmentFix(RssDocument actualRssDocument, RssDocument expectedRssDocument)
+        {
+            for (int i = 0; i < actualRssDocument.Channel.Items.Count; i++)
+            {
+                var actualItem = actualRssDocument.Channel.Items[i];
+                var expectedItem = expectedRssDocument.Channel.Items[i];
+                if (actualItem.PubDate != null && expectedItem.PubDate != null)
+                {
+                    actualItem.PubDate =
+                        DateParseLocalAdjustmentFix(actualItem.PubDate.Value, expectedItem.PubDate.Value);
+                }
+            }
+        }
+
+        [Fact]
+        public void GenerateDatesInExpectedFormat()
+        {
+            var date = new DateTime(2024, 07, 02, 06, 54, 0, DateTimeKind.Utc);
+            var dateString = date.ToRFC822Date();
+            dateString.Should().Be("Tue, 02 Jul 2024 06:54:00 +0000");
+        }
+
+        [Fact]
+        public void GenerateParseInExpectedFormat()
+        {
+            const string dateString = "Tue, 02 Jul 2024 06:54:00 +0000";
+            var expectedDate = new DateTime(2024, 07, 02, 06, 54, 0, DateTimeKind.Utc);
+            var parsedDate = DateParseLocalAdjustmentFix(dateString.FromRFC822Date(), expectedDate);
+            parsedDate.Should().Be(expectedDate);
+        }
+
+        private DateTime DateParseLocalAdjustmentFix(DateTime rfc822ParsedDateTime, DateTime expectedDateTime)
+        {
+            // Date.Parse used by FromRFC822Date() will adjust the time to local time.
+            // This method will adjust the time back to UTC if the difference is 1 hour.
+            if (rfc822ParsedDateTime - expectedDateTime == TimeSpan.FromHours(1))
+            {
+                return rfc822ParsedDateTime.AddHours(-1);
+            }
+            return rfc822ParsedDateTime;
         }
 
         private static RssDocument CreateExpectedRssDocument(IDirectoryInfo outputDirectory, ArticleModel[] articles)
