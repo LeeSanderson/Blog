@@ -73,4 +73,28 @@ public class NotebookConverterShould
             This is a test.
             """);
     }
+
+    [Fact]
+    public void ExtractMarkdownFromMultilineCodeCell()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "# Print Hello World\r\n" , "print(\"Hello world\")" ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+            ``` python
+            # Print Hello World
+            print("Hello world")
+            ```
+            """);
+    }
 }

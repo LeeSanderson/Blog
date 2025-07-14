@@ -10,15 +10,17 @@ namespace BlogToHtml.Notebooks;
 /// </summary>
 internal class NotebookConverter
 {
-    private readonly StringBuilder markdownBuilder = new();
     private const string DefaultLanguage = "python";
+
+    private readonly StringBuilder markdownBuilder = new();
+    private string language = string.Empty;
 
     public Notebook Convert(string notebookJson)
     {
         using var document = JsonDocument.Parse(notebookJson);
         var root = document.RootElement;
 
-        var language = GetNotebookLanguage(root);
+        language = GetNotebookLanguage(root);
         markdownBuilder.Length = 0; // Reset the markdown builder
         BuildMarkdown(root);
 
@@ -42,10 +44,22 @@ internal class NotebookConverter
                         case "markdown":
                             ProcessCellSource(cell);
                             break;
+                        case "code":
+                            ProcessCodeCell(cell);
+                            break;
                     }
                 }
             }
         }
+    }
+
+    private void ProcessCodeCell(JsonElement cell)
+    {
+        markdownBuilder.Append("``` ");
+        markdownBuilder.AppendLine(language);
+        ProcessCellSource(cell);
+        markdownBuilder.AppendLine();
+        markdownBuilder.Append("```");
     }
 
     private void ProcessCellSource(JsonElement cell)
