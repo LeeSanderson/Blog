@@ -17,13 +17,13 @@ public class NotebookConverterShould
             {
                 "metadata": {
                     "language_info": {
-                        "name": "python"
+                        "name": "fsharp"
                     }
                 }
             }
             """);
 
-        notebook.Language.Should().Be("python");
+        notebook.Language.Should().Be("fsharp");
     }
 
     [Fact]
@@ -32,5 +32,41 @@ public class NotebookConverterShould
         var notebook = converter.Convert("{}");
 
         notebook.Language.Should().Be("python");
+    }
+
+    [Fact]
+    public void ExtractMarkdownFromSimpleMarkdownCell()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "source": "# Hello World"
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be("# Hello World");
+    }
+
+    [Fact]
+    public void ExtractMarkdownFromMultilineMarkdownCell()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "source": [ "# Hello World\n" , "This is a test." ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be("# Hello World\nThis is a test.");
     }
 }
