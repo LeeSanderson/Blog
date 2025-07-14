@@ -9,7 +9,6 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
     using VerifyXunit;
     using Xunit;
 
-    [UsesVerify]
     public class BuildBlogCommandHandlerShould
     {
         [Fact]
@@ -17,7 +16,7 @@ namespace BlogToHtml.UnitTests.Commands.BuildBlog
         {
             using var blogOutput = 
                 await new BlogBuilder(new FileSystem())
-                    .AddContent("Example.md", "# Heading 1", tags: new []{ "test", "with", "tags"})
+                    .AddContent("Example.md", "# Heading 1", tags: ["test", "with", "tags"])
                     .GenerateAsync(false);
 
             var generatedHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "Example.html");
