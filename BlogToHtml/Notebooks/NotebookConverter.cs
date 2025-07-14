@@ -40,7 +40,7 @@ internal class NotebookConverter
                     switch (cellType.GetString())
                     {
                         case "markdown":
-                            ProcessMarkdownCell(cell);
+                            ProcessCellSource(cell);
                             break;
                     }
                 }
@@ -48,7 +48,7 @@ internal class NotebookConverter
         }
     }
 
-    private void ProcessMarkdownCell(JsonElement cell)
+    private void ProcessCellSource(JsonElement cell)
     {
         if (cell.TryGetProperty("source", out var source))
         {

@@ -61,12 +61,16 @@ public class NotebookConverterShould
                 "cells": [
                     {
                         "cell_type": "markdown",
-                        "source": [ "# Hello World\n" , "This is a test." ]
+                        "source": [ "# Hello World\r\n" , "This is a test." ]
                     }
                 ]
             }
             """);
 
-        notebook.Markdown.Should().Be("# Hello World\nThis is a test.");
+        notebook.Markdown.Should().Be(
+            """
+            # Hello World
+            This is a test.
+            """);
     }
 }
