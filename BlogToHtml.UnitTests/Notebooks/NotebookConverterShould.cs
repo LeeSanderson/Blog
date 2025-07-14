@@ -7,11 +7,11 @@ namespace BlogToHtml.UnitTests.Notebooks;
 
 public class NotebookConverterShould
 {
+    private readonly NotebookConverter converter = new();
+
     [Fact]
     public void IdentifyLanguageOfNotebook()
     {
-        var converter = new NotebookConverter();
-        
         var notebook = converter.Convert(
             """
             {
@@ -29,8 +29,6 @@ public class NotebookConverterShould
     [Fact]
     public void AssumeLanguageIsPythonIfNotDefined()
     {
-        var converter = new NotebookConverter();
-
         var notebook = converter.Convert("{}");
 
         notebook.Language.Should().Be("python");
