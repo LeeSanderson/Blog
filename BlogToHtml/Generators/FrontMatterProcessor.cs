@@ -1,39 +1,39 @@
-﻿namespace BlogToHtml.Generators
+﻿using System;
+using System.Linq;
+using Markdig.Extensions.Yaml;
+using Markdig.Syntax;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.Converters;
+using YamlDotNet.Serialization.NamingConventions;
+
+namespace BlogToHtml.Generators;
+
+internal class FrontMatterProcessor
 {
-    using Markdig.Extensions.Yaml;
-    using Markdig.Syntax;
-    using System;
-    using System.Linq;
-    using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.Converters;
-    using YamlDotNet.Serialization.NamingConventions;
+    private const string YamlDateFormat = "yyyy-MM-dd HH:mm:ss";
+    private readonly IDeserializer yamlDeserialiser;
 
-    internal class FrontMatterProcessor
+    public FrontMatterProcessor()
     {
-        private const string YamlDateFormat = "yyyy-MM-dd HH:mm:ss";
-        private readonly IDeserializer yamlDeserialiser;
+        var builder = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
 
-        public FrontMatterProcessor()
-        {
-            var builder = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
+        yamlDeserialiser = builder.Build();
+    }
 
-            yamlDeserialiser = builder.Build();
-        }
+    public T GetFrontMatter<T>(MarkdownDocument document)
+        where T : new()
+    {
+        var block = document
+            .Descendants<YamlFrontMatterBlock>()
+            .FirstOrDefault();
 
-        public T GetFrontMatter<T>(MarkdownDocument document)
-            where T : new()
-        {
-            var block = document
-                .Descendants<YamlFrontMatterBlock>()
-                .FirstOrDefault();
+        if (block == null)
+            return new T();
 
-            if (block == null)
-                return new T();
-
-            var yaml =
-                block
+        var yaml =
+            block
                 // this is not a mistake
                 // we have to call .Lines 2x
                 .Lines // StringLineGroup[]
@@ -45,7 +45,6 @@
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Aggregate((s, agg) => agg + s);
 
-            return yamlDeserialiser.Deserialize<T>(yaml);
-        }
+        return yamlDeserialiser.Deserialize<T>(yaml);
     }
 }

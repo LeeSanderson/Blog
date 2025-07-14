@@ -6,76 +6,75 @@ using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
-namespace BlogToHtml.MarkdigExtensions.HeroHeadings
+namespace BlogToHtml.MarkdigExtensions.HeroHeadings;
+
+internal class HeroHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
 {
-    internal class HeroHeadingRenderer : HtmlObjectRenderer<HeadingBlock>
+    private readonly IMarkdownContext markdownContext;
+    private readonly HeadingRenderer headingRenderer;
+
+    public HeroHeadingRenderer(HeadingRenderer? headingRenderer, IMarkdownContext markdownContext)
     {
-        private readonly IMarkdownContext markdownContext;
-        private readonly HeadingRenderer headingRenderer;
+        this.markdownContext = markdownContext;
+        this.headingRenderer = headingRenderer ?? new HeadingRenderer();
+    }
 
-        public HeroHeadingRenderer(HeadingRenderer? headingRenderer, IMarkdownContext markdownContext)
+    protected override void Write(HtmlRenderer renderer, HeadingBlock heading)
+    {
+        // Do what a regular heading rendered does
+        headingRenderer.Write(renderer, heading);
+
+        if (IsHeroHeading(heading))
+        { 
+            AddHeroImageToSource(renderer, GetInnerText(heading));
+        }
+    }
+
+    private string GetInnerText(HeadingBlock heading)
+    {
+        Inline? inline = heading.Inline;
+        var stringWriter = new StringWriter();
+        HtmlRenderer renderer = new HtmlRenderer(stringWriter);
+        while (inline != null)
         {
-            this.markdownContext = markdownContext;
-            this.headingRenderer = headingRenderer ?? new HeadingRenderer();
+            renderer.Write(inline);
+            inline = inline.NextSibling;
         }
 
-        protected override void Write(HtmlRenderer renderer, HeadingBlock heading)
-        {
-            // Do what a regular heading rendered does
-            headingRenderer.Write(renderer, heading);
+        return stringWriter.ToString();
+    }
 
-            if (IsHeroHeading(heading))
-            { 
-                AddHeroImageToSource(renderer, GetInnerText(heading));
-            }
-        }
-
-        private string GetInnerText(HeadingBlock heading)
+    private bool IsHeroHeading(HeadingBlock heading)
+    {
+        var propertiesList = heading.GetAttributes().Properties;
+        if (propertiesList != null)
         {
-            Inline? inline = heading.Inline;
-            var stringWriter = new StringWriter();
-            HtmlRenderer renderer = new HtmlRenderer(stringWriter);
-            while (inline != null)
+            var props = new Dictionary<string, string?>(propertiesList, StringComparer.OrdinalIgnoreCase);
+            if (props.ContainsKey("data-hero-heading"))
             {
-                renderer.Write(inline);
-                inline = inline.NextSibling;
+                return true;
             }
-
-            return stringWriter.ToString();
         }
 
-        private bool IsHeroHeading(HeadingBlock heading)
+        return false;
+    }
+
+    private void AddHeroImageToSource(HtmlRenderer renderer, string altText)
+    {
+        var currentRenderFile = this.markdownContext.CurrentSourceFile;
+        if (currentRenderFile == null)
         {
-            var propertiesList = heading.GetAttributes().Properties;
-            if (propertiesList != null)
-            {
-                var props = new Dictionary<string, string?>(propertiesList, StringComparer.OrdinalIgnoreCase);
-                if (props.ContainsKey("data-hero-heading"))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            throw new Exception("Cannot render hero heading. CurrentSourceFile not set.");
         }
 
-        private void AddHeroImageToSource(HtmlRenderer renderer, string altText)
-        {
-            var currentRenderFile = this.markdownContext.CurrentSourceFile;
-            if (currentRenderFile == null)
-            {
-                throw new Exception("Cannot render hero heading. CurrentSourceFile not set.");
-            }
-
-            var heroImageFileName = currentRenderFile.FileSystem.Path.ChangeExtension(currentRenderFile.Name, ".png");
-            var imageAttributes = new HtmlAttributes();
-            imageAttributes.AddProperty("src", heroImageFileName);
-            imageAttributes.AddClass("hero-image");
-            imageAttributes.AddProperty("alt", altText);
-            renderer.Write("<img");
-            renderer.WriteAttributes(imageAttributes);
-            renderer.Writer.Write("/>");
-            renderer.EnsureLine();
-        }
+        var heroImageFileName = currentRenderFile.FileSystem.Path.ChangeExtension(currentRenderFile.Name, ".png");
+        var imageAttributes = new HtmlAttributes();
+        imageAttributes.AddProperty("src", heroImageFileName);
+        imageAttributes.AddClass("hero-image");
+        imageAttributes.AddProperty("alt", altText);
+        renderer.Write("<img");
+        renderer.WriteAttributes(imageAttributes);
+        renderer.Writer.Write("/>");
+        renderer.EnsureLine();
     }
 }

@@ -1,12 +1,7 @@
-﻿namespace BlogToHtml.Generators
-{
-    using Models;
-    using RazorEngine.Templating;
+﻿namespace BlogToHtml.Generators;
 
-    internal class HeroImagesTemplate : TemplateBase<HeroImageModel>
-    {
-        public HeroImagesTemplate(IRazorEngineService razorEngineService) : base(razorEngineService, "HeroImage")
-        {
-        }
-    }
-}
+using Models;
+using RazorEngine.Templating;
+
+internal class HeroImagesTemplate(IRazorEngineService razorEngineService)
+    : TemplateBase<HeroImageModel>(razorEngineService, "HeroImage");

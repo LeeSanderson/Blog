@@ -1,24 +1,18 @@
-﻿namespace BlogToHtml.Generators
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using BlogToHtml.Models;
+
+namespace BlogToHtml.Generators;
+
+internal abstract class SummaryContentGeneratorBase(GeneratorContext generatorContext) : ISummaryContentGenerator
 {
-    using BlogToHtml.Models;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    protected readonly GeneratorContext GeneratorContext = generatorContext;
+    protected readonly List<SummaryModel> Summaries = new();
 
-    internal abstract class SummaryContentGeneratorBase : ISummaryContentGenerator
+    public abstract Task GenerateSummaryContentAsync();
+
+    public void OnArticleGenerated(ArticleModel model)
     {
-        protected readonly GeneratorContext GeneratorContext;
-        protected readonly List<SummaryModel> Summaries = new();
-
-        protected SummaryContentGeneratorBase(GeneratorContext generatorContext)
-        {
-            GeneratorContext = generatorContext;
-        }
-
-        public abstract Task GenerateSummaryContentAsync();
-
-        public void OnArticleGenerated(ArticleModel model)
-        {
-            Summaries.Add(model.Clone());
-        }
+        Summaries.Add(model.Clone());
     }
 }

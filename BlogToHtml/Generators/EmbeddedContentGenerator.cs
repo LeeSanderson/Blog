@@ -2,33 +2,26 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace BlogToHtml.Generators
+namespace BlogToHtml.Generators;
+
+internal class EmbeddedContentGenerator(GeneratorContext generatorContext, params string[] resourceFiles)
+    : GeneratorBase(generatorContext), IEmbeddedContentGenerator
 {
-    internal class EmbeddedContentGenerator : GeneratorBase, IEmbeddedContentGenerator
+    public async Task GenerateContentAsync()
     {
-        private readonly string[] resourceFiles;
-
-        public EmbeddedContentGenerator(GeneratorContext generatorContext, params string[] resourceFiles) : base(generatorContext)
+        foreach (var resourceFile in resourceFiles)
         {
-            this.resourceFiles = resourceFiles;
-        }
+            var assembly = typeof(EmbeddedContentGenerator).Assembly;
+            var resourceName = $"BlogToHtml.StaticResources.{resourceFile}";
+            await using var stream = assembly.GetManifestResourceStream(resourceName) ??
+                                     throw new Exception($"Resource {resourceName} not found");
 
-        public async Task GenerateContentAsync()
-        {
-            foreach (var resourceFile in resourceFiles)
-            {
-                var assembly = typeof(EmbeddedContentGenerator).Assembly;
-                var resourceName = $"BlogToHtml.StaticResources.{resourceFile}";
-                await using var stream = assembly.GetManifestResourceStream(resourceName) ??
-                                         throw new Exception($"Resource {resourceName} not found");
+            var dummyResourceFileName = Path.Combine(GeneratorContext.ContentDirectory.FullName, resourceFile);
+            var outputFileName = GetOutputFileName(dummyResourceFileName);
+            var outputFileInfo = GeneratorContext.FileSystem.FileInfo.New(outputFileName);
 
-                var dummyResourceFileName = Path.Combine(GeneratorContext.ContentDirectory.FullName, resourceFile);
-                var outputFileName = GetOutputFileName(dummyResourceFileName);
-                var outputFileInfo = GeneratorContext.FileSystem.FileInfo.New(outputFileName);
-
-                await using var writer = outputFileInfo.Create();
-                await stream.CopyToAsync(writer);
-            }
+            await using var writer = outputFileInfo.Create();
+            await stream.CopyToAsync(writer);
         }
     }
 }

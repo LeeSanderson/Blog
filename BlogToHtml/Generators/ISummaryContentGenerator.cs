@@ -1,12 +1,11 @@
-﻿namespace BlogToHtml.Generators
+﻿using System.Threading.Tasks;
+using BlogToHtml.Models;
+
+namespace BlogToHtml.Generators;
+
+internal interface ISummaryContentGenerator
 {
-    using BlogToHtml.Models;
-    using System.Threading.Tasks;
+    void OnArticleGenerated(ArticleModel model);
 
-    internal interface ISummaryContentGenerator
-    {
-        void OnArticleGenerated(ArticleModel model);
-
-        Task GenerateSummaryContentAsync();
-    }
+    Task GenerateSummaryContentAsync();
 }

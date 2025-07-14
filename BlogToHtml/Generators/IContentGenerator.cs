@@ -1,11 +1,9 @@
 ﻿using System.IO.Abstractions;
+using System.Threading.Tasks;
 
-namespace BlogToHtml.Generators
+namespace BlogToHtml.Generators;
+
+internal interface IContentGenerator
 {
-    using System.Threading.Tasks;
-
-    internal interface IContentGenerator
-    {
-        Task GenerateContentAsync(IFileInfo sourceFileInfo);
-    }
+    Task GenerateContentAsync(IFileInfo sourceFileInfo);
 }

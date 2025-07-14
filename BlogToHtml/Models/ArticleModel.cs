@@ -1,10 +1,9 @@
-﻿namespace BlogToHtml.Models
-{
-    using YamlDotNet.Serialization;
+﻿using YamlDotNet.Serialization;
 
-    public class ArticleModel : SummaryModel
-    {
-        [YamlIgnore]
-        public string Content { get; set; } = string.Empty;
-    }
+namespace BlogToHtml.Models;
+
+public class ArticleModel : SummaryModel
+{
+    [YamlIgnore]
+    public string Content { get; set; } = string.Empty;
 }
