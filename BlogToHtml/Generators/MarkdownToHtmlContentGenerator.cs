@@ -12,23 +12,16 @@ using Markdig.Syntax.Inlines;
 
 namespace BlogToHtml.Generators;
 
-internal class MarkdownToHtmlContentGenerator : ContentGeneratorBase, IContentGenerator
+internal class MarkdownToHtmlContentGenerator(GeneratorContext generatorContext)
+    : ContentGeneratorBase(generatorContext), IContentGenerator
 {
-    private readonly ArticleTemplate articleTemplate;
-    private readonly MarkdownPipeline pipeline;
-    private readonly FrontMatterProcessor frontMatterProcessor;
-    private readonly HeroImageGenerator heroImageGenerator;
+    private readonly ArticleTemplate articleTemplate = new(generatorContext.RazorEngineService);
+    private readonly MarkdownPipeline pipeline = MarkdownPipelineFactory.GetStandardPipeline();
+    private readonly FrontMatterProcessor frontMatterProcessor = new();
+    private readonly HeroImageGenerator heroImageGenerator = new(generatorContext);
 
     public event EventHandler<ArticleModel>? ArticleGenerated;
     public bool GenerateHeroImages { get; set; } = true;
-
-    public MarkdownToHtmlContentGenerator(GeneratorContext generatorContext) : base(generatorContext)
-    {
-        articleTemplate = new ArticleTemplate(generatorContext.RazorEngineService);
-        pipeline = MarkdownPipelineFactory.GetStandardPipeline();
-        frontMatterProcessor = new FrontMatterProcessor();
-        heroImageGenerator = new HeroImageGenerator(generatorContext);
-    }
 
     public override async Task GenerateContentAsync(IFileInfo sourceFileInfo)
     {
