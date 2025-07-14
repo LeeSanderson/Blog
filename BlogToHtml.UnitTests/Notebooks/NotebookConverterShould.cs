@@ -7,7 +7,7 @@ namespace BlogToHtml.UnitTests.Notebooks;
 
 public class NotebookConverterShould
 {
-    private readonly NotebookConverter converter = new();
+    private readonly NotebookConverter converter = new("test.ipynb");
 
     [Fact]
     public void IdentifyLanguageOfNotebook()
@@ -235,6 +235,41 @@ public class NotebookConverterShould
             ```
 
             <p>Hello world</p>
+            """);
+    }
+
+    [Fact]
+    public void ExtractMarkdownFromCodeCellImageExecutionResultOutput()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "print(\"Hello world\")" ],
+                        "outputs": [
+                            {
+                                "output_type": "execute_result",
+                                "data": 
+                                {
+                                    "image/png": "bas64_encoded_image"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+            ``` python
+            print("Hello world")
+            ```
+
+            <img class="img-fluid" src="data:image/png;base64,bas64_encoded_image">
+            
             """);
     }
 }

@@ -9,7 +9,7 @@ namespace BlogToHtml.Notebooks;
 /// Processes Jupyter Notebook JSON to extract Markdown content and language information.
 /// Uses format defined here: https://nbformat.readthedocs.io/en/latest/format_description.html
 /// </summary>
-internal class NotebookConverter
+internal class NotebookConverter(string fileName)
 {
     private const string DefaultLanguage = "python";
 
@@ -97,6 +97,11 @@ internal class NotebookConverter
     {
         if (output.TryGetProperty("data", out var data))
         {
+            if (data.TryGetProperty("image/png", out var image))
+            {
+                AppendImageToMarkdown(image);
+            }
+
             if (data.TryGetProperty("text/plain", out var text))
             {
                 WrapWithCodeSection("text", () => AppendToMarkdown(text));
@@ -108,6 +113,13 @@ internal class NotebookConverter
             }
         }
 
+    }
+
+    private void AppendImageToMarkdown(JsonElement image)
+    {
+        var imageBase64 = new StringBuilder();
+        AppendElementTextToBuffer(image, imageBase64);
+        markdownBuilder.AppendLine($"<img class=\"img-fluid\" src=\"data:image/png;base64,{imageBase64}\">");
     }
 
     private void ProcessStreamOutput(JsonElement output)
@@ -136,18 +148,20 @@ internal class NotebookConverter
         }
     }
 
-    private void AppendToMarkdown(JsonElement source)
+    private void AppendToMarkdown(JsonElement source) => AppendElementTextToBuffer(source, markdownBuilder);
+
+    private static void AppendElementTextToBuffer(JsonElement element, StringBuilder buffer)
     {
-        if (source.ValueKind == JsonValueKind.Array)
+        if (element.ValueKind == JsonValueKind.Array)
         {
-            foreach (var line in source.EnumerateArray())
+            foreach (var line in element.EnumerateArray())
             {
-                markdownBuilder.Append(line.GetString());
+                buffer.Append(line.GetString());
             }
         }
         else
         {
-            markdownBuilder.Append(source.GetString());
+            buffer.Append(element.GetString());
         }
     }
 
@@ -167,6 +181,6 @@ internal class NotebookConverter
 
 internal class Notebook
 {
-    public string Language { get; set; }
-    public string Markdown { get; set; }
+    public required string Language { get; init; }
+    public required string Markdown { get; init; }
 }
