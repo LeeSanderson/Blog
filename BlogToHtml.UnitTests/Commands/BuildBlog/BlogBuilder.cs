@@ -1,25 +1,29 @@
-﻿using System.IO.Abstractions;
+﻿using BlogToHtml.Commands.BuildBlog;
+using BlogToHtml.Models;
+using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
+using System.Net.Http;
 using System.Threading.Tasks;
-using BlogToHtml.Commands.BuildBlog;
-using BlogToHtml.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.Converters;
 using YamlDotNet.Serialization.NamingConventions;
+using RichardSzalay.MockHttp;
 
 namespace BlogToHtml.UnitTests.Commands.BuildBlog;
 
 internal class BlogBuilder
 {
     private readonly IFileSystem fileSystem;
+    private readonly MockHttpMessageHandler mockHttpMessageHandler = new();
     private const string YamlDateFormat = "yyyy-MM-dd HH:mm:ss";
     private const string FrontMatterDelimiter = "---";
 
     private readonly IDirectoryInfo inputDirectory;
     private readonly IDirectoryInfo outputDirectory;
-    private readonly List<ArticleModel> articles = new();
+    private readonly List<ArticleModel> articles = [];
     private readonly ISerializer yamlSerializer;
 
     public BlogBuilder(IFileSystem fileSystem)
@@ -42,7 +46,8 @@ internal class BlogBuilder
         string blogAbstract = "",
         string[]? tags = null,
         DateTime? publicationDate = null,
-        PublicationStatus publicationStatus = PublicationStatus.Published)
+        PublicationStatus publicationStatus = PublicationStatus.Published,
+        string? notebookUrl = null)
     {
         var markdownContentFileName = Path.ChangeExtension(Path.Combine(inputDirectory.FullName, fileName), ".md");
         var markdownContentFile = fileSystem.FileInfo.New(markdownContentFileName);
@@ -55,7 +60,8 @@ internal class BlogBuilder
                 Abstract = blogAbstract,
                 Tags = tags,
                 PublicationDate = publicationDate,
-                PublicationStatus = publicationStatus
+                PublicationStatus = publicationStatus,
+                NotebookUrl = notebookUrl
             });
         return this;
     }
@@ -77,9 +83,13 @@ internal class BlogBuilder
             output.InputFiles.Add(article.OutputFileInfo);
         }
 
+        var httpClientFactory = Substitute.For<IHttpClientFactory>();
+        httpClientFactory.CreateClient(Arg.Any<string>()).Returns(new HttpClient(mockHttpMessageHandler));
+
         var buildBlogCommand =
             new BuildBlogCommandHandler(
                 fileSystem,
+                httpClientFactory,
                 new BuildBlogOptions
                 {
                     ContentDirectory = inputDirectory.FullName,

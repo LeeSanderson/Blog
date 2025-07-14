@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net.Http;
 using BlogToHtml.Generators;
 using BlogToHtml.Models;
 
@@ -13,12 +14,17 @@ namespace BlogToHtml.Commands.GenerateHeroImage
     {
         private readonly ILogger logger;
         private readonly IFileSystem fileSystem;
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly GenerateHeroImageOptions options;
 
-        public GenerateHeroImageCommandHandler(IFileSystem fileSystem, GenerateHeroImageOptions options)
+        public GenerateHeroImageCommandHandler(
+            IFileSystem fileSystem, 
+            IHttpClientFactory httpClientFactory,
+            GenerateHeroImageOptions options)
         {
             logger = Log.ForContext<GenerateHeroImageCommandHandler>();
             this.fileSystem = fileSystem;
+            this.httpClientFactory = httpClientFactory;
             this.options = options;
         }
 
@@ -33,7 +39,8 @@ namespace BlogToHtml.Commands.GenerateHeroImage
                         RazorEngineFactory.CreateRazorEngineService(), 
                         fileSystem, 
                         outputDirectory, 
-                        outputDirectory);
+                        outputDirectory,
+                        httpClientFactory);
                 var generator = new HeroImageGenerator(generatorContext);
 
                 var model = new HeroImageModel

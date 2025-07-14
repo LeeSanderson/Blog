@@ -115,4 +115,20 @@ public class BuildBlogCommandHandlerShould
             .ScrubLinesContaining("<lastBuildDate>")
             .ScrubLinesContaining("<pubDate>"); // Build server run different local time, which means time offsets are different from dev.
     }
+
+    [Fact]
+    public async Task Generate_blog_article_from_remote_notebook()
+    {
+        using var blogOutput =
+            await new BlogBuilder(new FileSystem())
+                .AddContent(
+                    "NotebookExample.md", 
+                    "# Heading 1", 
+                    notebookUrl: "https://raw.githubusercontent.com/LeeSanderson/MLByExample/refs/heads/main/DecisionTreeClassifier.ipynb")
+                .GenerateAsync(false);
+
+        var generatedHtmlFile = blogOutput.GeneratedFiles.First(f => f.Name == "NotebookExample.html");
+        await Verifier.VerifyFile(generatedHtmlFile.FullName);
+
+    }
 }

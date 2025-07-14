@@ -1,12 +1,14 @@
-﻿using System.IO.Abstractions.TestingHelpers;
-using Xunit;
-using System.Collections.Generic;
-using System;
-using BlogToHtml.Generators;
+﻿using BlogToHtml.Generators;
 using BlogToHtml.Models;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentAssertions;
+using NSubstitute;
+using System;
+using System.Collections.Generic;
+using System.IO.Abstractions.TestingHelpers;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace BlogToHtml.UnitTests.Generators;
 
@@ -45,8 +47,14 @@ public class HeroImageGeneratorShould
     {
         var contentDirectory = fileSystem.DirectoryInfo.New(@"c:\Content\");
         var outputDirectory = fileSystem.DirectoryInfo.New(@"c:\Output\");
-        var generatorContext = new GeneratorContext(RazorEngineFactory.CreateRazorEngineService(), fileSystem,
-            contentDirectory, outputDirectory);
+        var httpClientFactory = Substitute.For<IHttpClientFactory>();
+        var generatorContext = 
+            new GeneratorContext(
+                RazorEngineFactory.CreateRazorEngineService(), 
+                fileSystem,
+                contentDirectory, 
+                outputDirectory,
+                httpClientFactory);
         var generator = new HeroImageGenerator(generatorContext);
         return generator;
     }

@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Abstractions.TestingHelpers;
-using System.Threading.Tasks;
-using BlogToHtml.Generators;
+﻿using BlogToHtml.Generators;
 using FluentAssertions;
+using NSubstitute;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Abstractions.TestingHelpers;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace BlogToHtml.UnitTests.Generators;
@@ -155,7 +158,7 @@ public class MarkdownToHtmlContentGeneratorShould
         var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
         {
             { @"c:\Content\Azure\Compute\VirtualMachines.md", CreateArticleFrom("# This is about VMs ![VMs](VM.png)") },
-            { @"c:\Content\Azure\Images\VM.png", new MockFileData(new byte[] { 0x1b, 0x2b, 0x3b }) },
+            { @"c:\Content\Azure\Images\VM.png", new MockFileData([0x1b, 0x2b, 0x3b]) },
         });
         var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
         var sourceFile = fileSystem.FileInfo.New(@"c:\Content\Azure\Compute\VirtualMachines.md");
@@ -169,12 +172,40 @@ public class MarkdownToHtmlContentGeneratorShould
             .Contain(@"<img src=""../Images/VM.png"" class=""img-fluid"" alt=""VMs"" />");
     }
 
+    [Fact]
+    public async Task EmbedNotebookContentInArticle()
+    {
+        const string sourceFileName = @"c:\Content\NotebookArticle.md";
+        const string generatedFileName = @"c:\Output\NotebookArticle.html";
+        var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>()
+        {
+            { sourceFileName, CreateNotebookArticleFrom("# ContentInArticle", "https://externalhose.com/nb.ipynb") },
+        });
+        var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
+        var sourceFile = fileSystem.FileInfo.New(sourceFileName);
+
+        await generator.GenerateContentAsync(sourceFile);
+
+        fileSystem
+            .GetFile(generatedFileName)
+            .TextContents
+            .Should()
+            .Contain("ContentFromNotebook");
+    }
+
     private static MarkdownToHtmlContentGenerator CreateMarkdownToHtmlContentGenerator(MockFileSystem fileSystem)
     {
         var contentDirectory = fileSystem.DirectoryInfo.New(@"c:\Content\");
         var outputDirectory = fileSystem.DirectoryInfo.New(@"c:\Output\");
-        var generatorContext = new GeneratorContext(RazorEngineFactory.CreateRazorEngineService(), fileSystem,
-            contentDirectory, outputDirectory);
+        var httpClientFactory = Substitute.For<IHttpClientFactory>();
+        var generatorContext = 
+            new GeneratorContext(
+                RazorEngineFactory.CreateRazorEngineService(), 
+                fileSystem,
+                contentDirectory, 
+                outputDirectory,
+                httpClientFactory);
+
         var generator = new MarkdownToHtmlContentGenerator(generatorContext);
         generator.GenerateHeroImages = false;
         return generator;
@@ -197,6 +228,18 @@ public class MarkdownToHtmlContentGeneratorShould
     private static MockFileData CreateArticleFrom(string markdown)
     {
         const string frontMatter = "---\nstatus: Published\n---\n\n";
+        return new MockFileData(frontMatter + markdown);
+    }
+
+    private static MockFileData CreateNotebookArticleFrom(string markdown, string notebookUrl)
+    {
+        var frontMatter = $"""
+                           ---
+                           status: Published
+                           notebookUrl: {notebookUrl}
+                           ---
+
+                           """;
         return new MockFileData(frontMatter + markdown);
     }
 }

@@ -1,14 +1,16 @@
-﻿using System;
-using BlogToHtml.Generators;
-using System.IO.Abstractions.TestingHelpers;
-using System.Threading.Tasks;
+﻿using BlogToHtml.Generators;
 using BlogToHtml.Models;
 using FluentAssertions;
-using Xunit;
-using X.Web.RSS;
+using NSubstitute;
+using System;
 using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
+using System.Net.Http;
+using System.Threading.Tasks;
+using X.Web.RSS;
 using X.Web.RSS.Structure;
 using X.Web.RSS.Structure.Validators;
+using Xunit;
 
 namespace BlogToHtml.UnitTests.Generators;
 
@@ -92,12 +94,14 @@ public class RssPageGeneratorShould
         contentDirectory.CreateIfNotExists();
         var outputDirectory = fileSystem.DirectoryInfo.New(@"c:\Output\");
         outputDirectory.CreateIfNotExists();
+        var httpClientFactory = Substitute.For<IHttpClientFactory>();
         var generatorContext = 
             new GeneratorContext(
                 RazorEngineFactory.CreateRazorEngineService(), 
                 fileSystem,
                 contentDirectory, 
-                outputDirectory);
+                outputDirectory,
+                httpClientFactory);
         var generator = new RssPageGenerator(generatorContext);
         return generator;
     }

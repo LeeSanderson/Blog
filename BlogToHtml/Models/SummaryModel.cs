@@ -25,6 +25,13 @@ public class SummaryModel
     [YamlMember(Alias = "status")]
     public PublicationStatus PublicationStatus { get; set; }
 
+    /// <summary>
+    /// Optional URL to a Jupyter notebook associated with the article.
+    /// Content from this url will be merged with the article content.
+    /// </summary>
+    [YamlMember(Alias = "notebookUrl")]
+    public string? NotebookUrl { get; set; }
+
     [YamlIgnore]
     public IFileInfo? OutputFileInfo { get; set; }
 
