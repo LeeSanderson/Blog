@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.Json;
 
 namespace BlogToHtml.Notebooks;
@@ -47,6 +48,8 @@ internal class NotebookConverter
                         case "code":
                             ProcessCodeCell(cell);
                             break;
+                        default:
+                            throw new NotSupportedException($"Unsupported cell type: {cellType.GetString()}");
                     }
                 }
             }
@@ -55,28 +58,96 @@ internal class NotebookConverter
 
     private void ProcessCodeCell(JsonElement cell)
     {
+        WrapWithCodeSection(language, () => ProcessCellSource(cell));
+        if (cell.TryGetProperty("outputs", out var outputs))
+        {
+            ProcessOutputsCell(outputs);
+        }
+    }
+
+    private void ProcessOutputsCell(JsonElement outputs)
+    {
+        if (outputs.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var output in outputs.EnumerateArray())
+            {
+                markdownBuilder.AppendLine();
+                markdownBuilder.AppendLine();
+                if (output.TryGetProperty("output_type", out var outputType))
+                {
+                    switch (outputType.GetString())
+                    {
+                        case "stream":
+                            ProcessStreamOutput(output);
+                            break;
+                        case "execute_result":
+                        case "display_data":
+                            ProcessExecuteResultOutput(output);
+                            break;
+                        default:
+                            throw new NotSupportedException($"Unsupported output type: {outputType.GetString()}");
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void ProcessExecuteResultOutput(JsonElement output)
+    {
+        if (output.TryGetProperty("data", out var data))
+        {
+            if (data.TryGetProperty("text/plain", out var text))
+            {
+                WrapWithCodeSection("text", () => AppendToMarkdown(text));
+            }
+
+            if (data.TryGetProperty("text/html", out var htmlText))
+            {
+                AppendToMarkdown(htmlText);
+            }
+        }
+
+    }
+
+    private void ProcessStreamOutput(JsonElement output)
+    {
+        if (output.TryGetProperty("text", out var text))
+        {
+            WrapWithCodeSection("text", () => AppendToMarkdown(text));
+        }
+    }
+
+    private void WrapWithCodeSection(string codeLanguage, Action writeMarkdownAction)
+    {
         markdownBuilder.Append("``` ");
-        markdownBuilder.AppendLine(language);
-        ProcessCellSource(cell);
+        markdownBuilder.AppendLine(codeLanguage);
+        writeMarkdownAction();
         markdownBuilder.AppendLine();
         markdownBuilder.Append("```");
+
     }
 
     private void ProcessCellSource(JsonElement cell)
     {
         if (cell.TryGetProperty("source", out var source))
         {
-            if (source.ValueKind == JsonValueKind.Array)
+            AppendToMarkdown(source);
+        }
+    }
+
+    private void AppendToMarkdown(JsonElement source)
+    {
+        if (source.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var line in source.EnumerateArray())
             {
-                foreach (var line in source.EnumerateArray())
-                {
-                    markdownBuilder.Append(line.GetString());
-                }
+                markdownBuilder.Append(line.GetString());
             }
-            else
-            {
-                markdownBuilder.Append(source.GetString());
-            }
+        }
+        else
+        {
+            markdownBuilder.Append(source.GetString());
         }
     }
 

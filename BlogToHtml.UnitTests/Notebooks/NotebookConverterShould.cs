@@ -97,4 +97,144 @@ public class NotebookConverterShould
             ```
             """);
     }
+
+    [Fact]
+    public void ExtractMarkdownFromCodeCellStreamOutput()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "print(\"Hello world\")" ],
+                        "outputs": [
+                            {
+                                "output_type": "stream",
+                                "name": "stdout",
+                                "text": [ "Hello world" ]
+                            }
+                        ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+            ``` python
+            print("Hello world")
+            ```
+            
+            ``` text
+            Hello world
+            ```
+            """);
+    }
+
+    [Fact]
+    public void ExtractMarkdownFromCodeCellPlainTextExecutionResultOutput()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "print(\"Hello world\")" ],
+                        "outputs": [
+                            {
+                                "output_type": "execute_result",
+                                "data": 
+                                {
+                                    "text/plain": [ "Hello world" ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+            ``` python
+            print("Hello world")
+            ```
+
+            ``` text
+            Hello world
+            ```
+            """);
+    }
+
+    [Fact]
+    public void ExtractMarkdownFromCodeCellPlainTextDisplayDataOutput()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "print(\"Hello world\")" ],
+                        "outputs": [
+                            {
+                                "output_type": "display_data",
+                                "data": 
+                                {
+                                    "text/plain": [ "Hello world" ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+            ``` python
+            print("Hello world")
+            ```
+
+            ``` text
+            Hello world
+            ```
+            """);
+    }
+
+    [Fact]
+    public void ExtractMarkdownFromCodeCellHtmlExecutionResultOutput()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "print(\"Hello world\")" ],
+                        "outputs": [
+                            {
+                                "output_type": "execute_result",
+                                "data": 
+                                {
+                                    "text/html": [ "<p>Hello world</p>" ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+            ``` python
+            print("Hello world")
+            ```
+
+            <p>Hello world</p>
+            """);
+    }
 }
