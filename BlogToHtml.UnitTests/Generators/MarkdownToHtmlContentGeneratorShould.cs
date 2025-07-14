@@ -1,6 +1,7 @@
 ﻿using BlogToHtml.Generators;
 using FluentAssertions;
 using NSubstitute;
+using RichardSzalay.MockHttp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -181,7 +182,12 @@ public class MarkdownToHtmlContentGeneratorShould
         {
             { sourceFileName, CreateNotebookArticleFrom("# ContentInArticle", "https://externalhose.com/nb.ipynb") },
         });
-        var generator = CreateMarkdownToHtmlContentGenerator(fileSystem);
+        var mockHttpMessageHandler = new MockHttpMessageHandler();
+        mockHttpMessageHandler
+            .When("https://externalhose.com/nb.ipynb")
+            .Respond("application/vnd.jupyter", "{ \"cells\": [{ \"cell_type\": \"markdown\", \"source\": \"ContentFromNotebook\" }] }");
+
+        var generator = CreateMarkdownToHtmlContentGenerator(fileSystem, mockHttpMessageHandler);
         var sourceFile = fileSystem.FileInfo.New(sourceFileName);
 
         await generator.GenerateContentAsync(sourceFile);
@@ -193,11 +199,17 @@ public class MarkdownToHtmlContentGeneratorShould
             .Contain("ContentFromNotebook");
     }
 
-    private static MarkdownToHtmlContentGenerator CreateMarkdownToHtmlContentGenerator(MockFileSystem fileSystem)
+    private static MarkdownToHtmlContentGenerator CreateMarkdownToHtmlContentGenerator(
+        MockFileSystem fileSystem, MockHttpMessageHandler? httpMessageHandler = null)
     {
         var contentDirectory = fileSystem.DirectoryInfo.New(@"c:\Content\");
         var outputDirectory = fileSystem.DirectoryInfo.New(@"c:\Output\");
         var httpClientFactory = Substitute.For<IHttpClientFactory>();
+        if (httpMessageHandler != null)
+        {
+            httpClientFactory.CreateClient(Arg.Any<string>()).Returns(new HttpClient(httpMessageHandler));
+        }
+
         var generatorContext = 
             new GeneratorContext(
                 RazorEngineFactory.CreateRazorEngineService(), 

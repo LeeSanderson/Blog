@@ -7,7 +7,7 @@ namespace BlogToHtml.UnitTests.Notebooks;
 
 public class NotebookConverterShould
 {
-    private readonly NotebookConverter converter = new("test.ipynb");
+    private readonly NotebookConverter converter = new();
 
     [Fact]
     public void IdentifyLanguageOfNotebook()

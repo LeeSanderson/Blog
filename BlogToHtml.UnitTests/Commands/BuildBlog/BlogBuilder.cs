@@ -66,6 +66,16 @@ internal class BlogBuilder
         return this;
     }
 
+    public BlogBuilder AddExternalNotebookContent(
+        string notebookUrl,
+        string notebookContent)
+    {
+        mockHttpMessageHandler.When(notebookUrl)
+            .Respond("application/vnd.jupyter", notebookContent);
+
+        return this;
+    }
+
     public async Task<BlogOutput> GenerateAsync(bool generateHeroImages)
     {
         await inputDirectory.CleanAsync();

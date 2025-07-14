@@ -1,14 +1,15 @@
-﻿using System;
-using System.IO.Abstractions;
-using System.Linq;
-using System.Threading.Tasks;
-using BlogToHtml.MarkdigExtensions;
+﻿using BlogToHtml.MarkdigExtensions;
 using BlogToHtml.Models;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using System;
+using System.IO.Abstractions;
+using System.Linq;
+using System.Threading.Tasks;
+using BlogToHtml.Notebooks;
 
 namespace BlogToHtml.Generators;
 
@@ -37,6 +38,11 @@ internal class MarkdownToHtmlContentGenerator(GeneratorContext generatorContext)
         var articleModel = ConvertMarkdownToModel(sourceFileInfo, markdownSource);
         if (articleModel.PublicationStatus == PublicationStatus.Published)
         {
+            if (!string.IsNullOrEmpty(articleModel.NotebookUrl))
+            {
+                articleModel = await ConvertNotebookToModel(articleModel.NotebookUrl, sourceFileInfo, markdownSource);
+            }
+
             var outputFileInfo = GetOutputFileInfo(sourceFileInfo, "html");
             EnsureOutputPathExists(outputFileInfo);
             articleModel.OutputFileInfo = outputFileInfo;
@@ -52,6 +58,18 @@ internal class MarkdownToHtmlContentGenerator(GeneratorContext generatorContext)
 
             ArticleGenerated?.Invoke(this, articleModel);
         }
+    }
+
+    private async Task<ArticleModel> ConvertNotebookToModel(string notebookUrl, IFileInfo sourceFileInfo, string fileMarkdownSource)
+    {
+        var httpClient = GeneratorContext.HttpClientFactory.CreateClient(string.Empty);
+        var response = await httpClient.GetAsync(notebookUrl);
+        response.EnsureSuccessStatusCode();
+        var notebookSource = await response.Content.ReadAsStringAsync();
+        var notebookConverter = new NotebookConverter();
+        var notebook = notebookConverter.Convert(notebookSource);
+
+        return ConvertMarkdownToModel(sourceFileInfo, fileMarkdownSource + Environment.NewLine + notebook.Markdown);
     }
 
     private ArticleModel ConvertMarkdownToModel(IFileInfo sourceFileInfo, string markdownSource)

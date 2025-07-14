@@ -9,7 +9,7 @@ namespace BlogToHtml.Notebooks;
 /// Processes Jupyter Notebook JSON to extract Markdown content and language information.
 /// Uses format defined here: https://nbformat.readthedocs.io/en/latest/format_description.html
 /// </summary>
-internal class NotebookConverter(string fileName)
+internal class NotebookConverter
 {
     private const string DefaultLanguage = "python";
 
