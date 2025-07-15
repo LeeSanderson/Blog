@@ -69,7 +69,15 @@ internal class MarkdownToHtmlContentGenerator(GeneratorContext generatorContext)
         var notebookConverter = new NotebookConverter();
         var notebook = notebookConverter.Convert(notebookSource);
 
-        return ConvertMarkdownToModel(sourceFileInfo, fileMarkdownSource + Environment.NewLine + notebook.Markdown);
+        var (frontMatter, additionalMarkdown) = frontMatterProcessor.SplitFrontMatter(fileMarkdownSource);
+        var combinedMarkdown =
+            frontMatter
+            + Environment.NewLine
+            + notebook.Markdown
+            + Environment.NewLine
+            + additionalMarkdown;
+
+        return ConvertMarkdownToModel(sourceFileInfo, combinedMarkdown);
     }
 
     private ArticleModel ConvertMarkdownToModel(IFileInfo sourceFileInfo, string markdownSource)

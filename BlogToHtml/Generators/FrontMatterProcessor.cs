@@ -50,7 +50,7 @@ internal class FrontMatterProcessor
         return yamlDeserialiser.Deserialize<T>(yaml);
     }
 
-    public (string frontMatter, string markdown) RemoveFrontMatter(string source)
+    public (string frontMatter, string markdown) SplitFrontMatter(string source)
     {
         var match = frontMatterExtractor.Match(source);
         if (match.Success)

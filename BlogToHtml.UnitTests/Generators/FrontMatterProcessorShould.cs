@@ -28,10 +28,10 @@ public class FrontMatterProcessorShould
         ExtractModelFromFrontMatter(ArticleWithTitleMarkdown).Title.Should().BeEquivalentTo("An article with a title");
 
     [Fact]
-    public void RemoveFrontMatter()
+    public void SplitFrontMatter()
     {
         var processor = new FrontMatterProcessor();
-        var (frontMatter, markdown) = processor.RemoveFrontMatter(ArticleWithTitleMarkdown);
+        var (frontMatter, markdown) = processor.SplitFrontMatter(ArticleWithTitleMarkdown);
 
         markdown.Should().Be("# Heading 1");
         frontMatter.Should().Be("""
@@ -42,10 +42,10 @@ public class FrontMatterProcessorShould
     }
 
     [Fact]
-    public void DoNothingIfRemoveFrontMatterWhereNothingToRemove()
+    public void DoNothingIfSplitAndNoFrontMatter()
     {
         var processor = new FrontMatterProcessor();
-        var (_, markdown) = processor.RemoveFrontMatter("# Heading 1");
+        var (_, markdown) = processor.SplitFrontMatter("# Heading 1");
 
         markdown.Should().Be("# Heading 1");
     }
