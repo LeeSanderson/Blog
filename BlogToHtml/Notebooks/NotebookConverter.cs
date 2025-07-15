@@ -136,8 +136,7 @@ internal class NotebookConverter
         markdownBuilder.AppendLine(codeLanguage);
         writeMarkdownAction();
         markdownBuilder.AppendLine();
-        markdownBuilder.Append("```");
-
+        markdownBuilder.AppendLine("```");
     }
 
     private void ProcessCellSource(JsonElement cell)

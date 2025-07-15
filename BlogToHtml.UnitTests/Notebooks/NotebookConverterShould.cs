@@ -95,6 +95,7 @@ public class NotebookConverterShould
             # Print Hello World
             print("Hello world")
             ```
+            
             """);
     }
 
@@ -126,9 +127,11 @@ public class NotebookConverterShould
             print("Hello world")
             ```
             
+            
             ``` text
             Hello world
             ```
+            
             """);
     }
 
@@ -161,10 +164,12 @@ public class NotebookConverterShould
             ``` python
             print("Hello world")
             ```
+            
 
             ``` text
             Hello world
             ```
+            
             """);
     }
 
@@ -198,9 +203,11 @@ public class NotebookConverterShould
             print("Hello world")
             ```
 
+            
             ``` text
             Hello world
             ```
+            
             """);
     }
 
@@ -234,6 +241,7 @@ public class NotebookConverterShould
             print("Hello world")
             ```
 
+            
             <p>Hello world</p>
             """);
     }
@@ -268,6 +276,7 @@ public class NotebookConverterShould
             print("Hello world")
             ```
 
+            
             <img class="img-fluid" src="data:image/png;base64,bas64_encoded_image">
             
             """);
