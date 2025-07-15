@@ -8,11 +8,12 @@
 
 blockquote {
     padding: 0 1em;
-    color: #4f5864;
+    color: #50fa7b;
     border-left: .25em solid #4f5864
 }
 
-h1, h2 {
+h1, h2, h3 {
+    margin-top: 2rem;
     padding-bottom: .3em;
 }
 
@@ -36,7 +37,7 @@ h1, h2 {
 }
 
 li {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 li.nav-item {
