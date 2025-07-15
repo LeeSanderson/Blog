@@ -132,6 +132,7 @@ internal class NotebookConverter
 
     private void WrapWithCodeSection(string codeLanguage, Action writeMarkdownAction)
     {
+        markdownBuilder.AppendLine();
         markdownBuilder.Append("``` ");
         markdownBuilder.AppendLine(codeLanguage);
         writeMarkdownAction();

@@ -91,6 +91,7 @@ public class NotebookConverterShould
 
         notebook.Markdown.Should().Be(
             """
+            
             ``` python
             # Print Hello World
             print("Hello world")
@@ -123,9 +124,11 @@ public class NotebookConverterShould
 
         notebook.Markdown.Should().Be(
             """
+            
             ``` python
             print("Hello world")
             ```
+            
             
             
             ``` text
@@ -161,11 +164,13 @@ public class NotebookConverterShould
 
         notebook.Markdown.Should().Be(
             """
+            
             ``` python
             print("Hello world")
             ```
             
-
+            
+            
             ``` text
             Hello world
             ```
@@ -199,10 +204,12 @@ public class NotebookConverterShould
 
         notebook.Markdown.Should().Be(
             """
+            
             ``` python
             print("Hello world")
             ```
 
+            
             
             ``` text
             Hello world
@@ -237,6 +244,7 @@ public class NotebookConverterShould
 
         notebook.Markdown.Should().Be(
             """
+            
             ``` python
             print("Hello world")
             ```
@@ -272,10 +280,11 @@ public class NotebookConverterShould
 
         notebook.Markdown.Should().Be(
             """
+            
             ``` python
             print("Hello world")
             ```
-
+            
             
             <img class="img-fluid" src="data:image/png;base64,bas64_encoded_image">
             
