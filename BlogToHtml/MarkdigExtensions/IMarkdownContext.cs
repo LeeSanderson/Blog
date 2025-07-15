@@ -1,9 +1,8 @@
 ﻿using System.IO.Abstractions;
 
-namespace BlogToHtml.MarkdigExtensions
+namespace BlogToHtml.MarkdigExtensions;
+
+public interface IMarkdownContext
 {
-    public interface IMarkdownContext
-    {
-        IFileInfo? CurrentSourceFile { get; set; }
-    }
+    IFileInfo? CurrentSourceFile { get; set; }
 }

@@ -1,13 +1,8 @@
-﻿namespace BlogToHtml.Generators
-{
-    using Models;
-    using RazorEngine.Templating;
-    using System.Collections.Generic;
+﻿namespace BlogToHtml.Generators;
 
-    internal class IndexTemplate : TemplateBase<List<SummaryModel>>
-    {
-        public IndexTemplate(IRazorEngineService razorEngineService) : base(razorEngineService, "Index")
-        {
-        }
-    }
-}
+using System.Collections.Generic;
+using Models;
+using RazorEngine.Templating;
+
+internal class IndexTemplate(IRazorEngineService razorEngineService)
+    : TemplateBase<List<SummaryModel>>(razorEngineService, "Index");

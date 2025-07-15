@@ -1,39 +1,38 @@
-﻿using RazorEngine.Templating;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using System.Threading.Tasks;
+using RazorEngine.Templating;
 
-namespace BlogToHtml.Generators
+namespace BlogToHtml.Generators;
+
+internal abstract class TemplateBase<TModel>
 {
-    internal abstract class TemplateBase<TModel>
+    private readonly IRazorEngineService razorEngineService;
+    private readonly string templateKey;
+    private bool compiled;
+
+    protected TemplateBase(IRazorEngineService razorEngineService, string template)
     {
-        private readonly IRazorEngineService razorEngineService;
-        private readonly string templateKey;
-        private bool compiled;
+        templateKey = $"Templates.{template}";
+        this.razorEngineService = razorEngineService;
+    }
 
-        protected TemplateBase(IRazorEngineService razorEngineService, string template)
+    public string Generate(TModel model, TemplateContext templateContext)
+    {
+        if (!compiled)
         {
-            templateKey = $"Templates.{template}";
-            this.razorEngineService = razorEngineService;
+            razorEngineService.Compile(templateKey, typeof(TModel));
+            compiled = true;
         }
 
-        public string Generate(TModel model, TemplateContext templateContext)
-        {
-            if (!compiled)
-            {
-                razorEngineService.Compile(templateKey, typeof(TModel));
-                compiled = true;
-            }
+        var viewBag = new DynamicViewBag();
+        viewBag.AddValue("TemplateContext", templateContext);
+        return razorEngineService.Run(templateKey, typeof(TModel), model, viewBag);
+    }
 
-            var viewBag = new DynamicViewBag();
-            viewBag.AddValue("TemplateContext", templateContext);
-            return razorEngineService.Run(templateKey, typeof(TModel), model, viewBag);
-        }
-
-        public async Task GenerateAndSaveAsync(TModel model, TemplateContext templateContext, IFileInfo outputFileInfo)
-        {
-            var htmlSource = Generate(model, templateContext);
-            await using var writer = outputFileInfo.CreateText();
-            await writer.WriteAsync(htmlSource);
-        }
+    public async Task GenerateAndSaveAsync(TModel model, TemplateContext templateContext, IFileInfo outputFileInfo)
+    {
+        var htmlSource = Generate(model, templateContext);
+        await using var writer = outputFileInfo.CreateText();
+        await writer.WriteAsync(htmlSource);
     }
 }

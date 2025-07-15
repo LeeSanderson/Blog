@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace BlogToHtml.Generators
+namespace BlogToHtml.Generators;
+
+internal interface IEmbeddedContentGenerator
 {
-    internal interface IEmbeddedContentGenerator
-    {
-        Task GenerateContentAsync();
-    }
+    Task GenerateContentAsync();
 }

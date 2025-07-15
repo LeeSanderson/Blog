@@ -1,23 +1,18 @@
 ﻿using System.IO.Abstractions;
+using System.Threading.Tasks;
 
-namespace BlogToHtml.Generators
+namespace BlogToHtml.Generators;
+
+internal class CopyContentGenerator(GeneratorContext generatorContext)
+    : ContentGeneratorBase(generatorContext), IContentGenerator
 {
-    using System.Threading.Tasks;
-
-    internal class CopyContentGenerator : ContentGeneratorBase, IContentGenerator
+    public override Task GenerateContentAsync(IFileInfo sourceFileInfo)
     {
-        public CopyContentGenerator(GeneratorContext generatorContext) : base(generatorContext)
-        {
-        }
+        var outputFileInfo = GetOutputFileInfo(sourceFileInfo);
+        EnsureOutputPathExists(outputFileInfo);
 
-        public override Task GenerateContentAsync(IFileInfo sourceFileInfo)
-        {
-            var outputFileInfo = GetOutputFileInfo(sourceFileInfo);
-            EnsureOutputPathExists(outputFileInfo);
+        sourceFileInfo.CopyTo(outputFileInfo.FullName, true);
 
-            sourceFileInfo.CopyTo(outputFileInfo.FullName, true);
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

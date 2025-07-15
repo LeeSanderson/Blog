@@ -1,13 +1,8 @@
-﻿namespace BlogToHtml.Generators
-{
-    using BlogToHtml.Models;
-    using RazorEngine.Templating;
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using BlogToHtml.Models;
+using RazorEngine.Templating;
 
-    internal class AllTemplate : TemplateBase<List<SummaryModel>>
-    {
-        public AllTemplate(IRazorEngineService razorEngineService) : base(razorEngineService, "All")
-        {
-        }
-    }
-}
+namespace BlogToHtml.Generators;
+
+internal class AllTemplate(IRazorEngineService razorEngineService)
+    : TemplateBase<List<SummaryModel>>(razorEngineService, "All");

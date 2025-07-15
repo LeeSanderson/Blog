@@ -40,5 +40,5 @@ steps:
   displayName: Publish Blog Generator Artifact 
   condition: succeeded()
   inputs:
-    targetPath: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/net6/'
+    targetPath: '$(Build.SourcesDirectory)/BlogToHtml/bin/$(buildConfiguration)/net9.0/'
     artifactName: 'blogToHtml'

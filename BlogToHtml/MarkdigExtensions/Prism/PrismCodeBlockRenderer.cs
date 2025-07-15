@@ -1,65 +1,64 @@
-﻿namespace BlogToHtml.MarkdigExtensions.Prism
+﻿using System.Text;
+using Markdig.Parsers;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
+namespace BlogToHtml.MarkdigExtensions.Prism;
+
+internal class PrismCodeBlockRenderer : HtmlObjectRenderer<CodeBlock>
 {
-    using System.Text;
-    using Markdig.Parsers;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
+    private readonly CodeBlockRenderer codeBlockRenderer;
 
-    internal class PrismCodeBlockRenderer : HtmlObjectRenderer<CodeBlock>
+    public PrismCodeBlockRenderer(CodeBlockRenderer? codeBlockRenderer) =>
+        this.codeBlockRenderer = codeBlockRenderer ?? new CodeBlockRenderer();
+
+    protected override void Write(HtmlRenderer renderer, CodeBlock node)
     {
-        private readonly CodeBlockRenderer codeBlockRenderer;
-
-        public PrismCodeBlockRenderer(CodeBlockRenderer? codeBlockRenderer) =>
-            this.codeBlockRenderer = codeBlockRenderer ?? new CodeBlockRenderer();
-
-        protected override void Write(HtmlRenderer renderer, CodeBlock node)
+        FencedCodeBlock? fencedCodeBlock = node as FencedCodeBlock;
+        FencedCodeBlockParser? parser = node.Parser as FencedCodeBlockParser;
+        if (fencedCodeBlock == null || parser == null)
         {
-            FencedCodeBlock? fencedCodeBlock = node as FencedCodeBlock;
-            FencedCodeBlockParser? parser = node.Parser as FencedCodeBlockParser;
-            if (fencedCodeBlock == null || parser == null)
-            {
-                codeBlockRenderer.Write(renderer, node);
-                return;
-            }
-
-            string language = fencedCodeBlock.Info!.Replace(parser.InfoPrefix ?? string.Empty, string.Empty);
-            if (string.IsNullOrWhiteSpace(language) || !PrismSupportedLanguages.IsSupportedLanguage(language))
-            {
-                codeBlockRenderer.Write(renderer, node);
-                return;
-            }
-
-            var htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddClass("language-" + language);
-            string sourceCode = ExtractSourceCode(node);
-            renderer
-                .Write("<pre>")
-                    .Write("<code")
-                        .WriteAttributes(htmlAttributes)
-                        .Write(">")
-                            .Write(sourceCode)
-                    .Write("</code>")
-                .Write("</pre>");
+            codeBlockRenderer.Write(renderer, node);
+            return;
         }
 
-        private static string ExtractSourceCode(LeafBlock node)
+        string language = fencedCodeBlock.Info!.Replace(parser.InfoPrefix ?? string.Empty, string.Empty);
+        if (string.IsNullOrWhiteSpace(language) || !PrismSupportedLanguages.IsSupportedLanguage(language))
         {
-            var stringBuilder = new StringBuilder();
-            var lines = node.Lines.Lines;
-            var length = lines.Length;
-            for (var index = 0; index < length; ++index)
-            {
-                var slice = lines[index].Slice;
-                if (slice.Text != null)
-                {
-                    string str = slice.Text.Substring(slice.Start, slice.Length);
-                    if (index > 0)
-                        stringBuilder.AppendLine();
-                    stringBuilder.Append(str);
-                }
-            }
-            return stringBuilder.ToString();
+            codeBlockRenderer.Write(renderer, node);
+            return;
         }
+
+        var htmlAttributes = new HtmlAttributes();
+        htmlAttributes.AddClass("language-" + language);
+        string sourceCode = ExtractSourceCode(node);
+        renderer
+            .Write("<pre>")
+            .Write("<code")
+            .WriteAttributes(htmlAttributes)
+            .Write(">")
+            .Write(sourceCode)
+            .Write("</code>")
+            .Write("</pre>");
+    }
+
+    private static string ExtractSourceCode(LeafBlock node)
+    {
+        var stringBuilder = new StringBuilder();
+        var lines = node.Lines.Lines;
+        var length = lines.Length;
+        for (var index = 0; index < length; ++index)
+        {
+            var slice = lines[index].Slice;
+            if (slice.Text != null)
+            {
+                string str = slice.Text.Substring(slice.Start, slice.Length);
+                if (index > 0)
+                    stringBuilder.AppendLine();
+                stringBuilder.Append(str);
+            }
+        }
+        return stringBuilder.ToString();
     }
 }

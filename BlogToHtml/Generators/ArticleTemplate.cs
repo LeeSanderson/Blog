@@ -1,12 +1,7 @@
-﻿namespace BlogToHtml.Generators
-{
-    using Models;
-    using RazorEngine.Templating;
+﻿using BlogToHtml.Models;
+using RazorEngine.Templating;
 
-    internal class ArticleTemplate : TemplateBase<ArticleModel>
-    {
-        public ArticleTemplate(IRazorEngineService razorEngineService) : base(razorEngineService, "Article")
-        {
-        }
-    }
-}
+namespace BlogToHtml.Generators;
+
+internal class ArticleTemplate(IRazorEngineService razorEngineService)
+    : TemplateBase<ArticleModel>(razorEngineService, "Article");
