@@ -21,13 +21,34 @@ public class FrontMatterProcessorShould
         ---
 
         # Heading 1
-
         """;
 
     [Fact]
     public void ParseTitleFromFrontMatter() =>
         ExtractModelFromFrontMatter(ArticleWithTitleMarkdown).Title.Should().BeEquivalentTo("An article with a title");
 
+    [Fact]
+    public void RemoveFrontMatter()
+    {
+        var processor = new FrontMatterProcessor();
+        var (frontMatter, markdown) = processor.RemoveFrontMatter(ArticleWithTitleMarkdown);
+
+        markdown.Should().Be("# Heading 1");
+        frontMatter.Should().Be("""
+                                ---
+                                title: An article with a title
+                                ---
+                                """);
+    }
+
+    [Fact]
+    public void DoNothingIfRemoveFrontMatterWhereNothingToRemove()
+    {
+        var processor = new FrontMatterProcessor();
+        var (_, markdown) = processor.RemoveFrontMatter("# Heading 1");
+
+        markdown.Should().Be("# Heading 1");
+    }
 
     private const string ArticleWithAbstractMarkdown = 
        """
@@ -36,7 +57,6 @@ public class FrontMatterProcessorShould
        ---
 
        # Heading 1
-
        """;
 
     [Fact]
@@ -56,7 +76,6 @@ public class FrontMatterProcessorShould
            ---
 
            # Heading 1
-
            """;
 
     [Fact]
@@ -71,7 +90,6 @@ public class FrontMatterProcessorShould
            ---
 
            # Heading 1
-
            """;
 
     [Fact]
@@ -85,7 +103,6 @@ public class FrontMatterProcessorShould
           ---
 
           # Heading 1
-
           """;
 
     [Fact]
@@ -100,7 +117,6 @@ public class FrontMatterProcessorShould
           ---
 
           # Heading 1
-
           """;
     [Fact]
     public void ParsePublishedStatusFromFrontMatter() =>
