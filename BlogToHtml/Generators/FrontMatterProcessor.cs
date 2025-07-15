@@ -17,7 +17,7 @@ internal class FrontMatterProcessor
     {
         var builder = new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, null, formats: YamlDateFormat));
+            .WithTypeConverter(new DateTimeConverter(DateTimeKind.Unspecified, formats: YamlDateFormat));
 
         yamlDeserialiser = builder.Build();
     }
