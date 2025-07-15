@@ -18,7 +18,9 @@ public class HeroImageGeneratorShould
     [Fact]
     public async Task GenerateAnImage()
     {
-        var generateImageFile = await GenerateImage(new HeroImageModel { Title = "A test image", Tags = new[] { "Tag1", "Tag2" } });
+        var generateImageFile = 
+            await GenerateImage(
+                new HeroImageModel { Title = "A test image", Tags = ["Tag1", "Tag2"] });
         var image = generateImageFile.Contents;
 
         image.Length.Should().BeGreaterThan(0);
@@ -33,7 +35,7 @@ public class HeroImageGeneratorShould
             { @"c:\Content\Test1.md", "Generator does not use source file content. Model is used instead" }
         });
         var generator = CreateHeroImageGenerator(fileSystem);
-        var model = new HeroImageModel {Title = "A test image", Tags = new[] {"Tag1", "Tag2"}, OutputHtml = true};
+        var model = new HeroImageModel {Title = "A test image", Tags = ["Tag1", "Tag2"], OutputHtml = true};
         var outputImageFileName = fileSystem.FileInfo.New(@"c:\Content\Test1.png");
             
         await generator.GenerateImageAsync(outputImageFileName, model);
@@ -41,7 +43,6 @@ public class HeroImageGeneratorShould
 
         htmlDebugOutput.Exists.Should().BeTrue();
     }
-
 
     private static HeroImageGenerator CreateHeroImageGenerator(MockFileSystem fileSystem)
     {
