@@ -102,14 +102,15 @@ internal class NotebookConverter
                 AppendImageToMarkdown(image);
             }
 
-            if (data.TryGetProperty("text/plain", out var text))
-            {
-                WrapWithCodeSection("text", () => AppendToMarkdown(text));
-            }
-
             if (data.TryGetProperty("text/html", out var htmlText))
             {
                 AppendToMarkdown(htmlText);
+                return; // Prefer HTML output over plain text
+            }
+
+            if (data.TryGetProperty("text/plain", out var text))
+            {
+                WrapWithCodeSection("text", () => AppendToMarkdown(text));
             }
         }
 

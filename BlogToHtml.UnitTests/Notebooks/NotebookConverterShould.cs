@@ -255,6 +255,44 @@ public class NotebookConverterShould
     }
 
     [Fact]
+    public void ExtractMarkdownFromCodeCellHtmlAndIgnoreTextExecutionResultOutput()
+    {
+        var notebook = converter.Convert(
+            """
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "source": [ "print(\"Hello world\")" ],
+                        "outputs": [
+                            {
+                                "output_type": "execute_result",
+                                "data": 
+                                {
+                                    "text/html": [ "<p>Hello world</p>" ],
+                                    "text/plain": [ "Hello world" ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            """);
+
+        notebook.Markdown.Should().Be(
+            """
+
+            ``` python
+            print("Hello world")
+            ```
+
+
+            <p>Hello world</p>
+            """);
+    }
+
+
+    [Fact]
     public void ExtractMarkdownFromCodeCellImageExecutionResultOutput()
     {
         var notebook = converter.Convert(

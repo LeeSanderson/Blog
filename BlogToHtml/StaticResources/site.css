@@ -43,3 +43,34 @@ li {
 li.nav-item {
     margin-bottom: 0;
 }
+
+table.dataframe {
+    border-collapse: collapse;
+    width: auto;
+    margin: 1em;
+    font-size: 1em;
+}
+
+table.dataframe thead {
+    border-top: 1px solid #ccc;
+}
+
+table.dataframe th {
+    font-weight: bold;
+    text-align: left;
+    padding: 4px 12px;
+}
+
+table.dataframe td {
+    padding: 4px 12px;
+}
+
+table.dataframe tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+    color: #4f5864
+}
+
+table.dataframe tbody tr:nth-child(odd) {
+    background-color: #fff;
+    color: #4f5864
+}
