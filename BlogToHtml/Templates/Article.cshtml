@@ -23,5 +23,11 @@
     </span>
 </div>
 <div data-pagefind-body>
-@Raw(Model.Content)
+    @Raw(Model.Content)
 </div>
+@{
+    DefineSection("Scripts", writer =>
+    {
+        writer.Write(@"<script type=""module"" src=""/subscribe/widget.js""></script>");
+    });
+}
